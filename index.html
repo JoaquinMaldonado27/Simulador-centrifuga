@@ -1,0 +1,1194 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Centrífuga horizontal 3D · TP10 Problema 4 · Li₂CO₃</title><style>
+:root{font-family:Inter,system-ui,Segoe UI,sans-serif;color:#e5eefb;background:#070d18}*{box-sizing:border-box}body{margin:0}.app{max-width:1480px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:16px;flex-wrap:wrap}h1{font-size:clamp(23px,3vw,35px);letter-spacing:-1px;margin:5px 0}h2{font-size:15px;margin:0 0 16px}p{line-height:1.5}.muted{color:#93a6bd}.eyebrow{font-size:11px;font-weight:750;letter-spacing:2px;color:#66d9e8}.tag{border:1px solid #2b4159;background:#122239;padding:8px 12px;border-radius:30px;font-size:12px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px}.panel{background:#101b2c;border:1px solid #24344a;border-radius:16px;overflow:hidden}.viewer{position:relative;height:640px;background:radial-gradient(circle at 50% 45%,#17324b,#08111e 75%)}#viewport{position:absolute;inset:0}.hud{position:absolute;z-index:2;pointer-events:none}.topLeft{left:18px;top:17px;font-size:12px;background:#0b1727d9;border:1px solid #263c51;padding:12px;border-radius:10px}.bottomLeft{left:18px;bottom:16px;display:flex;flex-wrap:wrap;gap:12px;background:#0b1727db;border-radius:10px;padding:11px 13px;font-size:12px}.legend{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}.status{right:18px;top:18px;font-size:12px;background:#0d2631d9;color:#8cf2ca;border:1px solid #245e59;padding:10px 13px;border-radius:10px}.controls{padding:18px}.row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-size:13px}.group{margin-bottom:19px}input[type=range]{width:100%;accent-color:#30b5d6}button{background:#1a2d42;color:#e8f3ff;border:1px solid #33506c;border-radius:9px;padding:10px 13px;font-weight:650;cursor:pointer}button:hover{background:#26425b}button.primary{background:#00a9d0;color:#031724;border-color:#00a9d0}button.active{background:#234e68;border-color:#47d4ff}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}.metric{background:#101b2c;border:1px solid #26384e;border-radius:13px;padding:16px}.metric small{color:#9baec6;display:block;margin-bottom:7px}.metric strong{font-size:23px}.explain{margin-top:16px;padding:17px 20px;background:#101b2c;border:1px solid #26384e;border-radius:13px}.explain h2{color:#83dce9}.foot{font-size:12px;color:#a4b4c9;margin-top:12px}.mode{display:flex;gap:8px;margin-bottom:18px}.mode button{flex:1}.formula{font-family:Cambria,Georgia,serif;color:#9fe6f0;font-size:16px;background:#091726;border:1px solid #263e53;border-radius:9px;padding:12px;line-height:1.7}.readout{color:#72ddeb;font-weight:750}.notice{border-left:3px solid #e5ae53;background:#29251e;padding:12px 14px;border-radius:4px;font-size:12px;color:#f0d5a4;margin-top:16px}.pathkey{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;margin-top:10px}.pathkey span{white-space:nowrap}@media(max-width:950px){.layout{grid-template-columns:1fr}.viewer{height:460px}.metrics{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.app{padding:10px}.viewer{height:390px}.metrics{gap:8px}.metric strong{font-size:19px}.topLeft{max-width:210px}}
+.guide{margin-top:20px;padding:22px;background:#101b2c;border:1px solid #26384e;border-radius:16px}.guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:20px}.guide details{border:1px solid #30445c;border-radius:12px;background:#0b1626;overflow:hidden}.guide summary{padding:16px;cursor:pointer;color:#dff7ff;font-weight:750;list-style:none}.guide summary::-webkit-details-marker{display:none}.guide summary:after{content:'+';float:right;color:#65d8eb;font-size:19px}.guide details[open] summary:after{content:'−'}.guide-body{padding:0 16px 15px;color:#c0d1e5;font-size:14px;line-height:1.65}.guide-body p{margin:9px 0}.guide-eq{font-family:Cambria,Georgia,serif;padding:11px 13px;background:#142b3c;color:#a5ecf7;border-radius:8px;margin:10px 0;overflow-x:auto}.guide-task{margin-top:16px;background:#143348;border-left:3px solid #52d5ed;border-radius:8px;padding:15px;color:#d6ecf7;font-size:14px;line-height:1.65}@media(max-width:760px){.guide-grid{grid-template-columns:1fr}.guide{padding:14px}}
+/* Versión limpia: se ocultan los bloques explicativos inferiores, manteniendo sus nodos para compatibilidad con el simulador. */
+.app > .foot, .app > .guide, .app > .labplus { display: none !important; }
+.presenting .controls,.presenting .metrics,.presenting .explain,.presenting header,.presenting .foot{display:none!important}.presenting .layout{grid-template-columns:1fr}.presenting .viewer{height:calc(100vh - 55px)}.presenting .app{max-width:none}.presenting .present-exit{display:block!important}.present-exit{display:none;position:fixed;right:22px;top:18px;z-index:80}.tankbadge{display:inline-block;padding:2px 7px;border:1px solid #287e9a;border-radius:8px;color:#b4f2fc;background:#0d3041;margin-top:4px}
+.labels-overlay,.label-leaders{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;overflow:hidden}
+.component-label{position:absolute;display:flex;align-items:center;justify-content:center;min-height:34px;max-width:190px;min-width:112px;box-sizing:border-box;padding:7px 11px;border:1px solid #76cfe5;border-radius:7px;background:rgba(9,30,46,.91);color:#eaf8ff;font:600 12px/1.25 Inter,system-ui,Segoe UI,sans-serif;text-align:center;white-space:normal;overflow-wrap:break-word;box-shadow:0 4px 15px #0006;transform:translate(-50%,-50%);transition:opacity .15s ease}
+.label-leaders line{stroke:#64c9e6;stroke-width:1.5;opacity:.75}
+.label-leaders circle{fill:#76e3f7}
+@media(max-width:700px){.component-label{font-size:10px;max-width:132px;min-width:92px;padding:5px 7px}}
+
+#guidePanel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(430px,calc(100% - 28px));z-index:26;background:rgba(7,21,37,.95);border:1px solid #56b9d4;border-radius:14px;box-shadow:0 18px 45px #0008;padding:16px 16px 12px;color:#eaf7ff;display:none;backdrop-filter:blur(8px)}
+#guidePanel.visible{display:block}
+#guidePanel h3{margin:0 0 6px;font-size:18px;color:#9fefff}
+#guidePanel p{margin:0 0 10px;font-size:13px;line-height:1.6;color:#d4e9f5}
+#guidePanel .mini{font-size:11px;color:#94bed2}
+#guidePanel .guideRow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+#guidePanel .guideActions{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+#guidePanel .guideActions .right{display:flex;gap:8px;flex-wrap:wrap}
+#guidePanel .guideBadge{display:inline-flex;align-items:center;gap:7px;padding:3px 9px;border-radius:999px;background:#10293a;border:1px solid #2f7088;font-size:11px;color:#d7f6ff}
+#guidePanel .guideDot{width:10px;height:10px;border-radius:50%;display:inline-block}
+#guidePanel .guideNote{background:#0d2435;border:1px solid #295e74;border-radius:10px;padding:10px 11px;margin-top:8px;font-size:12px;color:#d8eef8;line-height:1.55}
+#guideToggle{padding:7px 10px;font-size:11px;line-height:1.15;border-radius:8px;background:#0c2535e8;border:1px solid #397088;color:#daf2fc;box-shadow:0 2px 10px #0005;white-space:nowrap}
+#guideToggle.active{background:#175068e8;border-color:#41cce6}
+@media(max-width:620px){#guidePanel{padding:13px 12px 10px}#guidePanel h3{font-size:16px}}
+
+#guidePanel .guideVoice{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:8px 0;border-top:1px solid #25475b}
+#guidePanel .guideVoice button{padding:6px 8px;font-size:11px}
+#guideVoiceStatus{color:#94bed2;font-size:11px}
+
+/* Recorrido didáctico: panel lateral exclusivo, el visor permanece libre. */
+aside.controls.guided-session{padding:16px;min-height:490px;overflow:visible}
+aside.controls.guided-session > :not(#guidePanel){display:none !important}
+aside.controls #guidePanel{position:static;left:auto;top:auto;transform:none;width:100%;max-width:none;z-index:auto;margin:0;background:transparent;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;padding:0;color:#eaf7ff}
+aside.controls #guidePanel.visible{display:block}
+aside.controls #guidePanel h3{font-size:20px;line-height:1.3;margin:12px 0}
+aside.controls #guidePanel p{font-size:14px;line-height:1.75;color:#e1f0fa}
+aside.controls #guidePanel .guideNote{font-size:13px;line-height:1.7;background:#102c3f;padding:12px}
+
+aside.controls #guidePanel .guideActions{align-items:stretch}
+aside.controls #guidePanel .guideActions button{font-size:12px;padding:9px 11px}
+aside.controls #guidePanel .guideVoice{margin:9px 0;align-items:stretch}
+aside.controls #guidePanel .mini{margin-top:12px}
+@media(max-width:950px){aside.controls.guided-session{min-height:0}}
+
+/* Segunda etapa didáctica: explicación de controles, fuera del visor 3D. */
+#controlsCoach{display:none;position:sticky;top:8px;z-index:55;background:#09243a;border:1px solid #55c6e5;border-radius:12px;padding:13px;margin:0 0 16px;box-shadow:0 10px 28px #0008;color:#e7f5ff}
+#controlsCoach.open{display:block}
+#controlsCoach .coachHeading{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:#79dfee;font-weight:750;margin-bottom:5px}
+#controlsCoach h3{font-size:17px;margin:4px 0 9px;color:#eaffff}
+#controlsCoach p{font-size:12px;line-height:1.6;color:#d0e7f5;margin:0 0 10px}
+#controlsCoach .coachActions{display:flex;gap:6px;flex-wrap:wrap}
+#controlsCoach button{padding:7px 9px;font-size:11px}
+.coach-spotlight{outline:3px solid #fbd36b!important;outline-offset:4px!important;box-shadow:0 0 0 7px #ffd16638,0 0 24px #ffd16677!important;position:relative;z-index:35;transition:outline .16s ease}
+#controlsCoach .coachExit{float:right;padding:3px 8px;font-size:13px}
+
+/* Durante la explicación solo se interactúa con el panel didáctico. */
+body.guide-locked #viewport{pointer-events:none}
+body.guide-locked #actionDock,body.guide-locked #viewerActions,body.guide-locked #viewerViewSwitches,body.guide-locked #physicsToggle{filter:grayscale(.65);opacity:.45}
+body.guide-locked #viewerViewSwitches #guideToggle{filter:none;opacity:1;pointer-events:auto}
+body.guide-locked #actionDock button:disabled,body.guide-locked #viewerActions button:disabled{cursor:not-allowed}
+body.guide-locked #actionDock input:disabled,body.guide-locked #viewerActions input:disabled{cursor:not-allowed}
+
+#navigationHint{position:absolute;z-index:11;left:18px;top:113px;max-width:min(410px,calc(100% - 36px));padding:10px 12px;background:#081b2ce8;border:1px solid #2b6681;border-radius:10px;display:flex;align-items:center;gap:10px;color:#d6f4ff;font-size:11px;box-shadow:0 6px 18px #0005;pointer-events:none}
+#navigationHint .navKeys{display:flex;align-items:center;gap:3px;white-space:nowrap}
+#navigationHint kbd{font:700 11px/1.1 system-ui,Segoe UI,sans-serif;min-width:20px;padding:4px 5px;border:1px solid #58afcd;border-bottom-width:3px;border-radius:5px;background:#16394d;text-align:center;color:#ecfcff}
+#navigationHint .navWords{line-height:1.5;color:#bed8e7}
+#navigationHint .navWords b{color:#8fe9ff}
+#navigationHint[hidden]{display:none!important}
+@media(max-width:650px){#navigationHint{top:105px;left:10px;padding:7px 9px;font-size:10px;gap:6px}}
+</style><style>
+.labplus{margin-top:18px;background:#101b2c;border:1px solid #294158;border-radius:16px;padding:20px}.labplus h2{font-size:20px;margin:0 0 10px}.labtabs{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.labtabs button,.labplus button{background:#1b344a;color:#d9f6ff;border:1px solid #47647a;padding:9px 13px;border-radius:9px;cursor:pointer}.labtabs button.active{background:#126987;border-color:#54c6e9}.labgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.labcard{background:#0a1727;border:1px solid #294158;border-radius:12px;padding:15px}.labcard h3{margin:0 0 10px;font-size:15px;color:#9de8f5}.labcard p{font-size:13px;line-height:1.65;color:#c6d8e9}.labcard canvas{display:block;width:100%;height:190px;background:#091522;border-radius:8px}.labstat{font-size:13px;color:#c6d8e9;line-height:1.8}.labstat b{color:#e8faff}.labnotice{background:#352b16;border-left:3px solid #eab74c;padding:12px;border-radius:8px;font-size:13px;color:#f7e5bf}.labhero{border-left:4px solid #5bd6ef;background:#122e43;padding:14px;border-radius:8px;line-height:1.65;font-size:14px}.labpill{display:inline-block;background:#18354b;border:1px solid #355d75;border-radius:30px;padding:4px 9px;font-size:11px;color:#d4f5ff;margin:3px}.labfull{grid-column:1/-1}@media(max-width:800px){.labgrid{grid-template-columns:1fr}.labplus{padding:13px}}
+
+#guidePanel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(430px,calc(100% - 28px));z-index:26;background:rgba(7,21,37,.95);border:1px solid #56b9d4;border-radius:14px;box-shadow:0 18px 45px #0008;padding:16px 16px 12px;color:#eaf7ff;display:none;backdrop-filter:blur(8px)}
+#guidePanel.visible{display:block}
+#guidePanel h3{margin:0 0 6px;font-size:18px;color:#9fefff}
+#guidePanel p{margin:0 0 10px;font-size:13px;line-height:1.6;color:#d4e9f5}
+#guidePanel .mini{font-size:11px;color:#94bed2}
+#guidePanel .guideRow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+#guidePanel .guideActions{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+#guidePanel .guideActions .right{display:flex;gap:8px;flex-wrap:wrap}
+#guidePanel .guideBadge{display:inline-flex;align-items:center;gap:7px;padding:3px 9px;border-radius:999px;background:#10293a;border:1px solid #2f7088;font-size:11px;color:#d7f6ff}
+#guidePanel .guideDot{width:10px;height:10px;border-radius:50%;display:inline-block}
+#guidePanel .guideNote{background:#0d2435;border:1px solid #295e74;border-radius:10px;padding:10px 11px;margin-top:8px;font-size:12px;color:#d8eef8;line-height:1.55}
+#guideToggle{padding:7px 10px;font-size:11px;line-height:1.15;border-radius:8px;background:#0c2535e8;border:1px solid #397088;color:#daf2fc;box-shadow:0 2px 10px #0005;white-space:nowrap}
+#guideToggle.active{background:#175068e8;border-color:#41cce6}
+@media(max-width:620px){#guidePanel{padding:13px 12px 10px}#guidePanel h3{font-size:16px}}
+</style><style id="mode-panel-right-v1">
+/* Los modos se encuentran en el panel derecho, no en el dock inferior. */
+#operationModePanel{margin:0 0 23px;padding-bottom:16px;border-bottom:1px solid #30465b}
+#operationModePanel .row{margin-bottom:12px}
+#operationModePanel .buttons{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:0}
+#operationModePanel .buttons button{min-width:0;padding:9px 7px;font-size:11px}
+#operationModePanel #mode-free{grid-column:auto}
+#operationModePanel #preset-info{font-size:11px!important;color:#9bc3d2!important;margin:10px 0 0;line-height:1.5}
+#productionExploration[hidden]{display:none!important}
+
+#guidePanel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(430px,calc(100% - 28px));z-index:26;background:rgba(7,21,37,.95);border:1px solid #56b9d4;border-radius:14px;box-shadow:0 18px 45px #0008;padding:16px 16px 12px;color:#eaf7ff;display:none;backdrop-filter:blur(8px)}
+#guidePanel.visible{display:block}
+#guidePanel h3{margin:0 0 6px;font-size:18px;color:#9fefff}
+#guidePanel p{margin:0 0 10px;font-size:13px;line-height:1.6;color:#d4e9f5}
+#guidePanel .mini{font-size:11px;color:#94bed2}
+#guidePanel .guideRow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+#guidePanel .guideActions{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+#guidePanel .guideActions .right{display:flex;gap:8px;flex-wrap:wrap}
+#guidePanel .guideBadge{display:inline-flex;align-items:center;gap:7px;padding:3px 9px;border-radius:999px;background:#10293a;border:1px solid #2f7088;font-size:11px;color:#d7f6ff}
+#guidePanel .guideDot{width:10px;height:10px;border-radius:50%;display:inline-block}
+#guidePanel .guideNote{background:#0d2435;border:1px solid #295e74;border-radius:10px;padding:10px 11px;margin-top:8px;font-size:12px;color:#d8eef8;line-height:1.55}
+#guideToggle{padding:7px 10px;font-size:11px;line-height:1.15;border-radius:8px;background:#0c2535e8;border:1px solid #397088;color:#daf2fc;box-shadow:0 2px 10px #0005;white-space:nowrap}
+#guideToggle.active{background:#175068e8;border-color:#41cce6}
+@media(max-width:620px){#guidePanel{padding:13px 12px 10px}#guidePanel h3{font-size:16px}}
+</style><style id="layout-clean-v2">
+/* Nueva disposición: visor, dock de acciones y parámetros laterales */
+.app{max-width:1700px;padding:16px 20px}
+.layout{grid-template-columns:minmax(0,1fr) 330px;gap:14px;align-items:start}
+.layout>section{min-width:0}
+.viewer{height:min(69vh,690px);min-height:490px}
+.layout>section>.metrics,.layout>section>.explain{display:none!important}
+.controls{padding:17px;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;scrollbar-color:#31556c transparent}
+.controls h2{font-size:17px;margin:0 0 16px;color:#d2f6ff}
+.controls>.group{margin-bottom:24px}
+.controls .row{font-size:13px;margin-bottom:9px}
+.controls input[type=range]{margin:4px 0 8px}
+.controls .group p{font-size:11.5px!important;line-height:1.5}
+.controls .notice{display:none}
+#actionDock{background:#101b2c;border:1px solid #26384e;border-radius:15px;margin-top:12px;padding:12px 15px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:start}
+#actionDock .dock-segment{min-width:190px;flex:1 1 210px}
+#actionDock .dock-segment.main{flex:2 1 390px}
+#actionDock h3{margin:0 0 9px;font-size:12px;color:#95cddd;letter-spacing:.03em;text-transform:uppercase}
+#actionDock .buttons{display:flex;flex-wrap:wrap;gap:7px;margin:0}
+#actionDock button{font-size:12px;padding:8px 11px;white-space:nowrap}
+#actionDock .dock-description{font-size:11px;color:#a2b9cc;margin:6px 0 0;line-height:1.4}
+#actionDock .group{margin:0}
+#actionDock .row{display:none}
+#actionDock .group p{display:none}
+#actionDock #preset-info,#actionDock #distributionInfo{display:none}
+.controls #polySettings{border-top:1px solid #30465b;padding-top:12px}
+@media(max-width:1050px){.layout{grid-template-columns:1fr}.controls{position:static;max-height:none;overflow:visible}.viewer{height:580px;min-height:430px}}
+@media(max-width:620px){.app{padding:9px}.viewer{height:430px;min-height:350px}#actionDock{padding:10px;gap:14px}#actionDock .dock-segment{flex-basis:100%}}
+
+/* Velocidad de reproducción dentro del visor: independiente de rpm */
+#viewerActions{flex-wrap:wrap;max-width:min(390px,calc(100% - 25px));justify-content:flex-end}
+#viewerSpeed{width:100%;display:flex;flex-direction:column;gap:7px;color:#e3f6ff;font-size:12px;padding:4px 5px 0}
+#viewerSpeed .speedTop{display:flex;justify-content:space-between;align-items:center;gap:12px}
+#viewerSpeed #playbackSpeed{width:100%;accent-color:#49d5f1;cursor:pointer}
+#viewerSpeed #playbackValue{color:#89edff;font-size:13px}
+@media(max-width:620px){#viewerActions{max-width:245px}#viewerSpeed{font-size:11px}}
+/* Comandos principales dentro del visor 3D */
+#viewerActions{position:absolute;right:18px;bottom:18px;z-index:12;display:flex;gap:9px;align-items:center;padding:9px;border:1px solid #395b72;border-radius:12px;background:rgba(6,20,33,.88);box-shadow:0 5px 20px #0006;backdrop-filter:blur(7px)}
+#viewerActions button{font-size:13px;padding:10px 16px;white-space:nowrap}
+#viewerActions #play{background:#00a9d0;color:#031724;border-color:#00a9d0}
+#viewerActions #reset{background:#1a2d42;color:#e8f3ff}
+#sedToggle{display:none!important}
+@media(max-width:620px){#viewerActions{right:9px;bottom:9px;gap:5px;padding:6px}#viewerActions button{font-size:11px;padding:8px 10px}}
+
+#guidePanel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(430px,calc(100% - 28px));z-index:26;background:rgba(7,21,37,.95);border:1px solid #56b9d4;border-radius:14px;box-shadow:0 18px 45px #0008;padding:16px 16px 12px;color:#eaf7ff;display:none;backdrop-filter:blur(8px)}
+#guidePanel.visible{display:block}
+#guidePanel h3{margin:0 0 6px;font-size:18px;color:#9fefff}
+#guidePanel p{margin:0 0 10px;font-size:13px;line-height:1.6;color:#d4e9f5}
+#guidePanel .mini{font-size:11px;color:#94bed2}
+#guidePanel .guideRow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+#guidePanel .guideActions{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+#guidePanel .guideActions .right{display:flex;gap:8px;flex-wrap:wrap}
+#guidePanel .guideBadge{display:inline-flex;align-items:center;gap:7px;padding:3px 9px;border-radius:999px;background:#10293a;border:1px solid #2f7088;font-size:11px;color:#d7f6ff}
+#guidePanel .guideDot{width:10px;height:10px;border-radius:50%;display:inline-block}
+#guidePanel .guideNote{background:#0d2435;border:1px solid #295e74;border-radius:10px;padding:10px 11px;margin-top:8px;font-size:12px;color:#d8eef8;line-height:1.55}
+#guideToggle{padding:7px 10px;font-size:11px;line-height:1.15;border-radius:8px;background:#0c2535e8;border:1px solid #397088;color:#daf2fc;box-shadow:0 2px 10px #0005;white-space:nowrap}
+#guideToggle.active{background:#175068e8;border-color:#41cce6}
+@media(max-width:620px){#guidePanel{padding:13px 12px 10px}#guidePanel h3{font-size:16px}}
+</style><style id="dp-critical-center-styles">
+.dp-scale{margin:7px 0 12px}
+.dp-bar-wrap{position:relative;margin:26px 2px 7px}
+.controls .dp-bar-wrap #dpSlider{display:block;width:100%;margin:0;height:11px;appearance:none;-webkit-appearance:none;border:0;border-radius:10px;outline:none;cursor:pointer;background:linear-gradient(to right,#ba86ff 0%,#ba86ff 44%,#ffd166 47%,#ffd166 53%,#43e2c0 56%,#43e2c0 100%)}
+.dp-bar-wrap #dpSlider::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:19px;height:19px;border-radius:50%;background:#fff;border:3px solid #172435;box-shadow:0 0 0 2px #d9f5fb;position:relative;z-index:3}
+.dp-bar-wrap #dpSlider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid #172435;box-shadow:0 0 0 2px #d9f5fb}
+.dp-critical-tick{position:absolute;left:50%;top:-10px;height:28px;width:2px;transform:translateX(-50%);background:#ffd166;pointer-events:none;box-shadow:0 0 5px #ffd166aa}
+.dp-critical-label{text-align:center;font-size:11px;font-weight:700;color:#ffd166;margin-top:11px}
+.dp-scale-ends{display:flex;justify-content:space-between;font-size:10px;color:#98b8c9;margin:4px 1px 0}
+.dp-size-status{text-align:center;font-size:12px;font-weight:650;margin-top:13px;line-height:1.4}
+.dp-scale-key{display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;font-size:10px;color:#b7cad6;margin-top:10px}
+.dp-scale-key span{display:flex;align-items:center;gap:5px}
+.dp-scale-key i{display:inline-block;width:9px;height:9px;border-radius:50%}
+#dpScale:has(#dpSlider:disabled){opacity:.48}
+
+#guidePanel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(430px,calc(100% - 28px));z-index:26;background:rgba(7,21,37,.95);border:1px solid #56b9d4;border-radius:14px;box-shadow:0 18px 45px #0008;padding:16px 16px 12px;color:#eaf7ff;display:none;backdrop-filter:blur(8px)}
+#guidePanel.visible{display:block}
+#guidePanel h3{margin:0 0 6px;font-size:18px;color:#9fefff}
+#guidePanel p{margin:0 0 10px;font-size:13px;line-height:1.6;color:#d4e9f5}
+#guidePanel .mini{font-size:11px;color:#94bed2}
+#guidePanel .guideRow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+#guidePanel .guideActions{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+#guidePanel .guideActions .right{display:flex;gap:8px;flex-wrap:wrap}
+#guidePanel .guideBadge{display:inline-flex;align-items:center;gap:7px;padding:3px 9px;border-radius:999px;background:#10293a;border:1px solid #2f7088;font-size:11px;color:#d7f6ff}
+#guidePanel .guideDot{width:10px;height:10px;border-radius:50%;display:inline-block}
+#guidePanel .guideNote{background:#0d2435;border:1px solid #295e74;border-radius:10px;padding:10px 11px;margin-top:8px;font-size:12px;color:#d8eef8;line-height:1.55}
+#guideToggle{padding:7px 10px;font-size:11px;line-height:1.15;border-radius:8px;background:#0c2535e8;border:1px solid #397088;color:#daf2fc;box-shadow:0 2px 10px #0005;white-space:nowrap}
+#guideToggle.active{background:#175068e8;border-color:#41cce6}
+@media(max-width:620px){#guidePanel{padding:13px 12px 10px}#guidePanel h3{font-size:16px}}
+</style><style id="tp10-advanced">
+#physicsToggle{position:absolute;left:14px;bottom:51px;z-index:19;font-size:11px;padding:7px 10px;background:#102739dd;border:1px solid #3a7187;color:#d5f4ff;border-radius:9px;cursor:pointer}
+#physicsPanel{position:absolute;left:14px;bottom:87px;z-index:20;width:min(340px,calc(100% - 28px));max-height:55%;overflow:auto;background:#071b2bed;color:#d9f3ff;border:1px solid #4a91a7;border-radius:12px;padding:12px;box-shadow:0 8px 25px #0007;font-size:12px}
+#physicsPanel[hidden],#comparePanel[hidden]{display:none!important}
+.tp-data{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}.tp-data div{padding:6px;background:#183349;border-radius:7px}.tp-data b{display:block;color:#75e2ed;font-size:13px;margin-top:3px}
+#comparePanel{margin-top:10px;background:#0d2637;border:1px solid #355771;border-radius:11px;padding:12px;font-size:12px;color:#d6efff}
+#comparePanel h4{margin:0 0 8px;color:#82dfef;font-size:13px}
+.tp-compare-inputs{display:flex;flex-wrap:wrap;gap:9px;align-items:end}.tp-compare-inputs label{display:grid;gap:4px;flex:1;min-width:125px}.tp-compare-inputs input{min-width:0;width:100%;background:#132e43;color:white;border:1px solid #49768d;border-radius:7px;padding:6px}
+#compareChart{width:100%;height:156px;display:block;margin-top:10px;background:#081a28;border-radius:8px}
+#compareReadout{line-height:1.55;margin-top:7px}.tp-note{color:#9ec1d0;font-size:11px;margin:7px 0 0}
+
+#guidePanel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(430px,calc(100% - 28px));z-index:26;background:rgba(7,21,37,.95);border:1px solid #56b9d4;border-radius:14px;box-shadow:0 18px 45px #0008;padding:16px 16px 12px;color:#eaf7ff;display:none;backdrop-filter:blur(8px)}
+#guidePanel.visible{display:block}
+#guidePanel h3{margin:0 0 6px;font-size:18px;color:#9fefff}
+#guidePanel p{margin:0 0 10px;font-size:13px;line-height:1.6;color:#d4e9f5}
+#guidePanel .mini{font-size:11px;color:#94bed2}
+#guidePanel .guideRow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+#guidePanel .guideActions{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+#guidePanel .guideActions .right{display:flex;gap:8px;flex-wrap:wrap}
+#guidePanel .guideBadge{display:inline-flex;align-items:center;gap:7px;padding:3px 9px;border-radius:999px;background:#10293a;border:1px solid #2f7088;font-size:11px;color:#d7f6ff}
+#guidePanel .guideDot{width:10px;height:10px;border-radius:50%;display:inline-block}
+#guidePanel .guideNote{background:#0d2435;border:1px solid #295e74;border-radius:10px;padding:10px 11px;margin-top:8px;font-size:12px;color:#d8eef8;line-height:1.55}
+#guideToggle{padding:7px 10px;font-size:11px;line-height:1.15;border-radius:8px;background:#0c2535e8;border:1px solid #397088;color:#daf2fc;box-shadow:0 2px 10px #0005;white-space:nowrap}
+#guideToggle.active{background:#175068e8;border-color:#41cce6}
+@media(max-width:620px){#guidePanel{padding:13px 12px 10px}#guidePanel h3{font-size:16px}}
+</style>
+<style id="tp10-viewer-visibility-switches">
+#viewerViewSwitches{position:absolute;top:69px;right:16px;z-index:20;display:flex;flex-direction:column;align-items:flex-end;gap:7px;pointer-events:auto}
+#viewerViewSwitches button{padding:7px 10px;font-size:11px;line-height:1.15;border-radius:8px;background:#0c2535e8;border:1px solid #397088;color:#daf2fc;box-shadow:0 2px 10px #0005;white-space:nowrap}
+#viewerViewSwitches button.active{background:#175068e8;border-color:#41cce6}
+@media(max-width:620px){#viewerViewSwitches{top:65px;right:10px}#viewerViewSwitches button{font-size:10px;padding:6px 8px}}
+
+#guidePanel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(430px,calc(100% - 28px));z-index:26;background:rgba(7,21,37,.95);border:1px solid #56b9d4;border-radius:14px;box-shadow:0 18px 45px #0008;padding:16px 16px 12px;color:#eaf7ff;display:none;backdrop-filter:blur(8px)}
+#guidePanel.visible{display:block}
+#guidePanel h3{margin:0 0 6px;font-size:18px;color:#9fefff}
+#guidePanel p{margin:0 0 10px;font-size:13px;line-height:1.6;color:#d4e9f5}
+#guidePanel .mini{font-size:11px;color:#94bed2}
+#guidePanel .guideRow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+#guidePanel .guideActions{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+#guidePanel .guideActions .right{display:flex;gap:8px;flex-wrap:wrap}
+#guidePanel .guideBadge{display:inline-flex;align-items:center;gap:7px;padding:3px 9px;border-radius:999px;background:#10293a;border:1px solid #2f7088;font-size:11px;color:#d7f6ff}
+#guidePanel .guideDot{width:10px;height:10px;border-radius:50%;display:inline-block}
+#guidePanel .guideNote{background:#0d2435;border:1px solid #295e74;border-radius:10px;padding:10px 11px;margin-top:8px;font-size:12px;color:#d8eef8;line-height:1.55}
+#guideToggle{padding:7px 10px;font-size:11px;line-height:1.15;border-radius:8px;background:#0c2535e8;border:1px solid #397088;color:#daf2fc;box-shadow:0 2px 10px #0005;white-space:nowrap}
+#guideToggle.active{background:#175068e8;border-color:#41cce6}
+@media(max-width:620px){#guidePanel{padding:13px 12px 10px}#guidePanel h3{font-size:16px}}
+</style>
+<style id="action-dock-single-line-v3">
+/* Una sola línea para los seis botones visibles, sin diámetros rápidos. */
+#actionDock{flex-wrap:nowrap;align-items:center;gap:clamp(12px,2vw,32px);overflow-x:auto;scrollbar-width:thin}
+#actionDock .dock-segment{flex:0 0 auto;min-width:0}
+#actionDock .dock-segment.main{flex:0 0 auto}
+#actionDock .buttons{display:flex;flex-wrap:nowrap;gap:7px}
+#actionDock button{white-space:nowrap;padding:8px clamp(6px,.7vw,11px);font-size:clamp(10px,.72vw,12px)}
+#actionDock h3{white-space:nowrap}
+@media(max-width:1050px){#actionDock{overflow-x:auto}}
+@media(max-width:620px){#actionDock .dock-segment{flex:0 0 auto;min-width:0}#actionDock .buttons{flex-wrap:nowrap}}
+
+#guidePanel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(430px,calc(100% - 28px));z-index:26;background:rgba(7,21,37,.95);border:1px solid #56b9d4;border-radius:14px;box-shadow:0 18px 45px #0008;padding:16px 16px 12px;color:#eaf7ff;display:none;backdrop-filter:blur(8px)}
+#guidePanel.visible{display:block}
+#guidePanel h3{margin:0 0 6px;font-size:18px;color:#9fefff}
+#guidePanel p{margin:0 0 10px;font-size:13px;line-height:1.6;color:#d4e9f5}
+#guidePanel .mini{font-size:11px;color:#94bed2}
+#guidePanel .guideRow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+#guidePanel .guideActions{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+#guidePanel .guideActions .right{display:flex;gap:8px;flex-wrap:wrap}
+#guidePanel .guideBadge{display:inline-flex;align-items:center;gap:7px;padding:3px 9px;border-radius:999px;background:#10293a;border:1px solid #2f7088;font-size:11px;color:#d7f6ff}
+#guidePanel .guideDot{width:10px;height:10px;border-radius:50%;display:inline-block}
+#guidePanel .guideNote{background:#0d2435;border:1px solid #295e74;border-radius:10px;padding:10px 11px;margin-top:8px;font-size:12px;color:#d8eef8;line-height:1.55}
+#guideToggle{padding:7px 10px;font-size:11px;line-height:1.15;border-radius:8px;background:#0c2535e8;border:1px solid #397088;color:#daf2fc;box-shadow:0 2px 10px #0005;white-space:nowrap}
+#guideToggle.active{background:#175068e8;border-color:#41cce6}
+@media(max-width:620px){#guidePanel{padding:13px 12px 10px}#guidePanel h3{font-size:16px}}
+</style><style>
+</style><style id="start-choice-style">
+#startChoice{position:fixed;inset:0;z-index:150;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(3,12,23,.66);backdrop-filter:blur(6px)}
+#startChoice[hidden]{display:none!important}
+#startChoiceCard{width:min(690px,100%);padding:clamp(22px,4vw,40px);border:1px solid #458ea8;border-radius:22px;text-align:center;color:#e9f7ff;background:linear-gradient(145deg,#112b40f7,#071522fa);box-shadow:0 24px 90px #000b}
+#startChoiceCard .startIcon{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;background:#0a4656;border:1px solid #3ac7e6;border-radius:20px;font-size:32px;margin-bottom:12px}
+#startChoiceCard h2{font-size:clamp(23px,3vw,32px);margin:0 0 10px;color:#edfbff;letter-spacing:-.6px}
+#startChoiceCard p{font-size:14px;line-height:1.65;color:#b7d2e1;margin:0 auto 23px;max-width:510px}
+#startChoiceCard .startBtns{display:flex;align-items:stretch;justify-content:center;gap:12px;flex-wrap:wrap}
+#startChoiceCard .startBtns button{padding:18px 20px;min-width:220px;flex:1 1 220px;font-size:15px;border-radius:13px;transition:transform .15s,background .15s}
+#startChoiceCard .startBtns button:hover{transform:translateY(-2px)}
+#startGuideBtn{background:#28c9ea;color:#051a27;border-color:#61e4ff}
+#startSkipBtn{background:#1c354c;color:#e4f6ff;border-color:#4a758d}
+#startChoiceCard .startFine{font-size:11px;color:#8eaec3;margin-top:15px}
+</style></head><body><div id="startChoice" role="dialog" aria-modal="true" aria-labelledby="startChoiceTitle" aria-describedby="startChoiceDesc"><div id="startChoiceCard"><div class="startIcon" aria-hidden="true">🎓</div><h2 id="startChoiceTitle">Bienvenido a la centrífuga 3D</h2><p id="startChoiceDesc">¿Querés conocer cómo funciona el equipo paso a paso o preferís explorar la simulación por tu cuenta?</p><div class="startBtns"><button id="startGuideBtn" type="button">▶ Comenzar recorrido guiado</button><button id="startSkipBtn" type="button">Omitir · Explorar libremente</button></div><div class="startFine">Podés iniciar el recorrido guiado en cualquier momento desde el visor.</div></div></div><button id="exitPresentation" class="present-exit">Salir de presentación ✕</button><main class="app"><header><div><div class="eyebrow">UNJU · OPERACIONES UNITARIAS 1 · TP10 / PROBLEMA 4</div><h1>Centrífuga horizontal <span style="color:#53d6ee">/ TP10 problema 4 · Li₂CO₃</span></h1><div class="muted">Sedimentación centrífuga de cristales de Li₂CO₃ · Modelo didáctico basado en GE12</div></div><div class="tag">Base 3D + calibración TP10</div></header><div class="layout"><section><div class="panel viewer"><div id="viewport"></div><div id="viewerActions" role="group" aria-label="Control principal de reproducción"></div><button type="button" id="physicsToggle" aria-expanded="false">▤ Datos físicos</button><div id="physicsPanel" hidden><strong>Datos físicos · modelo ideal</strong><div class="tp-data" id="physicsNumbers"></div><p class="tp-note">Σ y d crítico según las hipótesis del TP10. El depósito es ilustrativo, no predice capacidad real ni rendimiento a 40 % m/m.</p></div><svg id="labelLeaders" class="label-leaders" aria-hidden="true"></svg><div id="labelsOverlay" class="labels-overlay" aria-label="Etiquetas de componentes 3D"></div><div id="guidePanel" aria-live="polite"><div class="guideRow"><div class="guideBadge"><span id="guideStepIndex">Paso 1/9</span></div><button type="button" id="guideClose" style="padding:5px 9px">✕</button></div><h3 id="guideTitle">Recorrido guiado</h3><p id="guideText">Explicación</p><div id="guideExtra" class="guideNote"></div><div class="guideVoice"><button type="button" id="guideVoiceToggle" aria-pressed="true">🔊 Voz activada</button><button type="button" id="guideVoiceReplay">↻ Repetir explicación</button><span id="guideVoiceStatus" role="status">Narración en español</span></div><div class="guideActions"><button type="button" id="guidePrev">← Anterior</button><div class="right"><button type="button" id="guideNext" class="primary">Siguiente →</button></div></div><div class="mini">La guía mueve la cámara automáticamente. Podés cerrarla en cualquier momento.</div></div><div id="navigationHint" aria-label="Cómo mover la cámara"><div class="navKeys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div><div class="navWords"><b>Desplazarte:</b> WASD · <b>Girar:</b> arrastrar mouse · <b>Zoom:</b> rueda · <b>Más rápido:</b> Shift</div></div><div class="hud topLeft"><strong>VISTA INDUSTRIAL · COLECTOR DE SALIDA VISIBLE</strong><br>Arrastrar: girar · Rueda: zoom · Izquierda: alimentación · Derecha: clarificado<br><span style="color:#8ea3b8">Colector interno conceptual: conecta el flujo del rotor con la salida axial</span></div><div class="hud" id="povhud" style="display:none;left:18px;top:105px;background:#071725e8;border:1px solid #397a90;border-radius:10px;padding:12px;max-width:300px;font-size:12px;line-height:1.7"><b>👁 CÁMARA DE PARTÍCULA</b><br><span id="povdata">Preparando seguimiento…</span><br><span style="color:#9bb8cb">La cámara acompaña al cristal; no es visión física real.</span></div><div id="microPanel" style="display:none;position:absolute;right:12px;bottom:62px;width:min(390px,calc(100% - 24px));background:#071625f2;border:1px solid #4b7e92;border-radius:12px;padding:12px;z-index:9;color:#e5f4ff;box-shadow:0 12px 32px #0008"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px"><strong style="font-size:13px">🔬 VISTA MICROSCÓPICA · CORTE AMPLIADO</strong><button type="button" id="microClose" style="padding:5px 9px">✕</button></div><canvas id="microCanvas" width="700" height="380" style="display:block;width:100%;height:auto;background:#091f30;border-radius:7px" aria-label="Vista ampliada de trayectorias de cristales en el líquido y hacia la pared"></canvas><p id="microCaption" style="font-size:12px;line-height:1.5;margin:7px 0 0;color:#b7d8e8">Las posiciones se calculan con el mismo modelo de Stokes que la vista 3D.</p></div><div id="transPanel" style="display:none;position:absolute;left:12px;bottom:62px;width:min(410px,calc(100% - 24px));max-height:74%;overflow:auto;background:#071625f5;border:1px solid #55adbb;border-radius:12px;padding:12px;z-index:12;color:#e5f4ff"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><strong>🧭 CORTE TRANSVERSAL · PARTÍCULAS</strong><button type="button" id="transClose">✕</button></div><canvas id="transCanvas" width="520" height="390" style="display:block;width:100%;height:auto;border-radius:8px;background:#091f30;margin-top:8px" aria-label="Sección circular del tambor, partículas y flechas de velocidad radial"></canvas><div style="display:flex;justify-content:space-between;gap:8px;margin:9px 0"><button type="button" id="transNext">⏭ Seguir otro cristal</button><span id="transInfo" style="font-size:12px;color:#b9dce9">Cristal #1</span></div><canvas id="radialCanvas" width="520" height="250" style="display:block;width:100%;height:auto;background:#091522;border-radius:8px" aria-label="Gráfico radial de la partícula seleccionada en función del tiempo"></canvas><p id="radialInfo" style="font-size:12px;line-height:1.6;color:#c9e7f2;margin:8px 0 0"></p><div style="font-size:11px;color:#93b4c6">Flechas: velocidad radial relativa, no fuerzas a escala. Espesor del sedimento: representación cualitativa.</div></div><div class="hud status" id="status">● Cargando 3D…</div><div class="hud bottomLeft" id="sizeLegend"><span><i class="legend" style="background:#ba86ff"></i>Menor que 0,90 × d crítico</span><span><i class="legend" style="background:#ffd166"></i>Cerca del crítico (±10 %)</span><span><i class="legend" style="background:#43e2c0"></i>Mayor que 1,10 × d crítico</span></div></div><div id="actionDock" aria-label="Botones de la simulación"></div><div class="metrics">
+<div class="metric"><small>Retenidas · acumuladas</small><strong id="capture-live">0</strong></div>
+<div class="metric"><small>Escapadas · lote visual</small><strong id="escape-live">0</strong></div>
+<div class="metric"><small>Factor Σ</small><strong id="sigma">—</strong></div>
+<div class="metric"><small>Diámetro crítico</small><strong id="dcrit">—</strong></div>
+<div class="metric"><small>dₚ de simulación</small><strong id="dpmetric">—</strong></div>
+<div class="metric"><small>Relación dₚ / dcrit</small><strong id="ratioMetric">—</strong></div>
+<div class="metric"><small>Caudal volumétrico</small><strong id="qvMetric">—</strong></div>
+<div class="metric"><small>Producción / modo</small><strong id="modeMetric">—</strong></div><div class="metric"><small>Retención del lote visual</small><strong id="visualYield">—</strong></div><div class="metric"><small>Nivel receptor ilustrativo</small><strong id="receiverLevel">30 %</strong></div>
+<div style="display:none" aria-hidden="true"><span id="vax"></span><span id="vt"></span><span id="caught"></span><span id="escaped"></span><span id="tres"></span><span id="gforce"></span></div>
+</div><div class="explain"><h2>🔬 Tres partículas del mismo diámetro, tres posiciones iniciales</h2><div class="pathkey"><span>Cerca de la pared: recorrido radial corto</span><span>Zona media: recorrido intermedio</span><span>Cerca de r₀: recorrido radial largo</span></div><p>Las tres sienten aceleración hacia afuera, pero pueden tener destinos diferentes. El <b>color indica el tamaño frente al diámetro crítico</b>; el destino se determina por la posición de la partícula. Las menores que dcrit no se agrupan por atracción en el eje: simplemente no alcanzan la pared y salen arrastradas más cerca de la zona interna del flujo.</p><p id="live-interpret" style="color:#b6e2ee">Iniciá la simulación para observar los dos destinos.</p></div><div class="explain"><h2 id="exptitle">Funcionamiento del equipo</h2><div id="expbody">La suspensión proviene del tanque izquierdo y entra por una tubería al eje. El líquido clarificado y los cristales no retenidos salen axialmente y llegan al tanque receptor derecho. Los cristales migran radialmente hacia la pared del tambor. La descarga de líquido va por una tubería fija con codos y entra desde arriba al tanque receptor. El accionamiento y los accesorios son ilustrativos.</div><div class="pathkey"><span>Retención: la partícula alcanza la pared</span><span>Escape: la partícula sale con el líquido</span><span>🟠 Naranja: descarga de sólidos por lote (con tambor parado)</span><span>En tránsito: se mueve dentro del rotor</span></div></div></section><aside class="panel controls"><h2>Control de simulación</h2><p style="font-size:12px;color:#9cc4d5">Activá «Vista desde un cristal» para viajar con una partícula. Usá «Cambiar cristal» para comparar destinos. La cámara acompaña su trayectoria y permite ver la pared acercándose o la salida del equipo. <b>Además, ahora podés desplazarte con WASD</b> para recorrer la instalación.</p><div class="buttons"><button class="primary" id="play" disabled>▶ Iniciar</button><button id="reset" disabled>↺ Reiniciar</button><button id="pov" disabled>👁 Vista desde un cristal</button><button id="nextp" disabled>⏭ Cambiar cristal</button><button id="micro" disabled>🔬 Vista microscópica</button><button id="trans" disabled>🧭 Corte transversal + gráfica</button><button id="trailsToggle" class="active" type="button">〰 Trayectorias: visibles</button><button id="sedToggle" class="active" type="button">◉ Sedimento: visible</button><button id="labelsToggle" class="active" type="button">🏷 Etiquetas: visibles</button></div><div class="group"><div class="row"><b>Modo de operación</b></div><div class="buttons"><button id="mode-exp" type="button" class="active">🧪 Ensayo experimental</button><button id="mode-free" type="button">🎛 Explorar</button></div><p id="preset-info" style="font-size:12px;color:#b4c8d8">Ensayo experimental: Q = 0,10 m³/s. La geometría horizontal es ilustrativa; la calibración reproduce Σ = 7498,33 m². Los niveles de tanque y los contadores de partículas son esquemáticos. El movimiento de las partículas se calcula en una región anular ideal. Para simplificar la visualización 3D, el líquido se muestra como un único volumen transparente, sin dibujar la superficie libre interna como un tubo separado.</p></div><div class="group"><div class="row"><b>Distribución de tamaños</b></div>
+<div class="buttons"><button id="monoMode" type="button" class="active">● Monodispersa</button><button id="polyMode" type="button">◌ Polidispersa</button></div>
+<p id="distributionInfo" style="font-size:12px;color:#b4c8d8">Todas las partículas tienen el diámetro seleccionado.</p>
+<div id="polySettings" style="display:none"><p style="color:#b9d8e7;font-size:12px;line-height:1.5">Color de cada cristal según su diámetro comparado con el <b>diámetro crítico del caudal seleccionado</b>: <span style="color:#ba86ff">● Menor</span> · <span style="color:#ffd166">● Cercano (±10 %)</span> · <span style="color:#43e2c0">● Mayor</span>. Los colores se mantienen aun al llegar a la pared o salir con el líquido.</p><div class="row"><b>Diámetro mínimo</b><span class="readout" id="polyMinText">0,2 µm</span></div><input id="polyMin" type="range" min="0.1" max="9.9" step="0.1" value="0.2">
+<div class="row" style="margin-top:10px"><b>Diámetro máximo</b><span class="readout" id="polyMaxText">10,0 µm</span></div><input id="polyMax" type="range" min="0.2" max="10" step="0.1" value="10">
+<p style="font-size:12px;color:#b4c8d8">Distribución uniforme en número entre los límites (ejemplo exploratorio, no medido en el TP). En tránsito: pequeños azul, medianos amarillo, grandes naranja. Al capturarse: verde; al escapar: rosa.</p></div></div><div class="group"><div class="row"><b>Diámetro de partícula</b><span id="dpRead" class="readout">5,00 µm</span></div><div id="dpScale" class="dp-scale">
+  <div class="dp-bar-wrap"><input type="range" id="dpSlider" min="0" max="1000" step="1" value="500" aria-describedby="dpCriticalLabel"><div class="dp-critical-tick" aria-hidden="true"></div></div>
+  <div class="dp-critical-label" id="dpCriticalLabel">▲ DIÁMETRO CRÍTICO: <strong id="dpCriticalValue">—</strong></div>
+  <div class="dp-scale-ends"><span id="dpScaleMin">0,10 µm</span><span id="dpScaleMax">10,00 µm</span></div>
+  <div class="dp-size-status" id="dpSizeStatus">● Comparando con el diámetro crítico</div>
+  <div class="dp-scale-key"><span><i style="background:#ba86ff"></i>Menor</span><span><i style="background:#ffd166"></i>Crítico ±10 %</span><span><i style="background:#43e2c0"></i>Mayor</span></div>
+</div></div><div class="group"><div class="row"><b>Producción industrial</b><span id="qmRead" class="readout">4,30 t/h</span></div><input type="range" id="qmSlider" min="1" max="12" step="0.1" value="4.3"><p style="font-size:12px;color:#b4c8d8">Este control actúa en modo planta o explorar. En modo experimental se usa Q = 0,10 m³/s.</p></div><div class="group"><div class="row"><b>Transparencia del líquido</b><span class="readout" id="waterOpacityLabel">28 %</span></div><input id="waterOpacity" type="range" min="0" max="75" step="5" value="28"><p style="font-size:12px;color:#b4c8d8">Solo modifica la representación visual, no los cálculos.</p></div><div class="group"><div class="row"><b>Atajos rápidos</b></div><div class="buttons"><button id="quick5" type="button">dₚ = 5 µm</button><button id="quickCrit" type="button">dₚ = dcrit</button><button id="quick02" type="button">dₚ = 0,2 µm</button></div></div><div class="group" id="playbackGroup"><div class="row"><b>⏱ Velocidad de simulación (no modifica las rpm)</b></div><p style="font-size:12px;color:#b4c8d8">Cámara lenta: cambia el tiempo de reproducción, no las condiciones físicas ni las rpm del cálculo.</p><div class="row" style="display:flex;align-items:center;gap:10px"><input type="range" id="playbackSpeed" min="0" max="100" step="1" value="100" style="flex:1;min-width:0"><strong id="playbackValue" style="min-width:62px;text-align:right">1×</strong></div><div class="buttons"><button type="button" data-playback="1" class="active">1×</button><button type="button" data-playback="0.1">0,1×</button><button type="button" data-playback="0.02">0,02×</button><button type="button" data-playback="0.005">0,005×</button><button type="button" data-playback="0.001">0,001×</button></div><p style="font-size:11px;color:#91b2c7">A 0,001×, un segundo simulado tarda aproximadamente 16,7 minutos reales. Para volver rápido, seleccioná 1×.</p></div><div class="group"><div class="row"><b>Alimentación de cristales</b></div><div class="buttons"><button id="feed" type="button" class="active">● Alimentación continua: activada</button><button id="pulse" type="button">+ Agregar 100 cristales</button></div><p style="font-size:12px;color:#b4c8d8">La alimentación continua repone partículas conforme salen o son retenidas. Los indicadores del ducto izquierdo representan el avance desde el tanque de suspensión. «Agregar 100 cristales» inicia un nuevo lote adicional. Condiciones fijas dentro de cada escenario; seleccioná arriba mayor retención, mezcla o menor retención.</p></div><div class="group"><div class="row"><b>📍 Qué es cada cosa</b></div><p style="font-size:12px;color:#b4c8d8;margin:.2rem 0 .55rem 0">Además de las etiquetas en la escena, esta guía rápida resume los elementos principales:</p><div class="pathkey" style="display:grid;gap:8px"><span><b>Tanque de suspensión:</b> contiene la alimentación de agua + cristales de Li₂CO₃.</span><span><b>Ducto de entrada:</b> conduce la suspensión hasta el eje de la centrífuga.</span><span><b>Tambor o rotor:</b> zona giratoria donde ocurre la separación.</span><span><b>Motor / accionamiento:</b> entrega la rotación al eje del equipo.</span><span><b>Salida axial:</b> el clarificado sale alineado con el eje y entra al receptor por arriba, con las partículas que no se separaron.</span><span><b>Tanque receptor:</b> recibe el efluente proveniente de la centrífuga.</span></div></div><div class="notice">La <b>geometría horizontal, los radios y la longitud</b> son supuestos didácticos inspirados en tu simulador. Se calibró la velocidad de giro para reproducir <b>Σ = 7498,33 m²</b> y los resultados del TP10. El 40 % m/m puede generar sedimentación impedida, que este modelo ideal de partículas independientes no contempla.</div></aside></div><p class="foot">Los tanques de alimentación y producto se incorporaron para visualizar la ruta de la suspensión y del clarificado y no constituye un componente obligatorio de una centrífuga tubular real. El equipo se presenta como maqueta industrial conceptual con accionamiento, bancada, bridas, válvulas y tuberías; no reproduce un modelo comercial. La trayectoria de cada partícula se calcula mediante la solución analítica radial de Stokes y una velocidad axial media uniforme. Se visualiza una sección abierta del tambor para estudiar el mecanismo; los sólidos retenidos no salen durante el giro: se muestra su descarga por lote solo con el equipo detenido. Requiere conexión a internet para cargar Three.js. Esta versión se basa visualmente en el simulador horizontal que compartiste y fue recalibrada para el TP10 problema 4.</p><section class="guide"><div class="guide-head"><div><div class="eyebrow">GUÍA DIDÁCTICA · GE12, DIAPOSITIVAS 36–39</div><h2 style="font-size:23px;margin:9px 0">Entendé qué ocurre en cada parte del equipo</h2><p class="muted" style="margin:0">Abrí cada explicación mientras manipulás el modelo 3D. La geometría industrial es ilustrativa; las ecuaciones corresponden al modelo de centrífuga tubular estudiado.</p></div></div><div class="guide-grid"><details open><summary>01 · ¿Qué es esta centrífuga?</summary><div class="guide-body"><p>Es una <b>centrífuga tubular de sedimentación</b>: el recipiente gira y transmite movimiento al líquido. Los cristales de Li₂CO₃, más densos que el agua, tienden a desplazarse hacia la pared externa del líquido. A diferencia de una filtración centrífuga, aquí el mecanismo representado es la <b>sedimentación en un campo centrífugo</b>, no el paso del líquido a través de una tela filtrante.</p><p><b>En el modelo:</b> el motor impulsa el eje y el tambor; la carcasa exterior protege el conjunto. Las bridas, tuberías y soportes se incluyen para contextualizar la instalación, pero su ubicación no equivale a un plano de fabricación.</p></div></details><details><summary>02 · Alimentación y zona de líquido</summary><div class="guide-body"><p>La alimentación es una suspensión acuosa de cristales. La GE12 idealiza un <b>volumen anular</b> de líquido comprendido entre el radio de la superficie libre <b>r₀</b> y el radio interior del tambor <b>R</b>, a lo largo de una longitud efectiva <b>b</b>.</p><div class="guide-eq">V = π (R² − r₀²) b</div><p>El caudal <b>Qᵥ</b> determina cuánto tiempo permanece el líquido en esa zona. En la animación, la alimentación y la salida están simplificadas para dejar visible el interior.</p></div></details><details><summary>03 · ¿Por qué los cristales se van hacia la pared?</summary><div class="guide-body"><p>Al girar, una partícula situada a un radio <b>r</b> experimenta una aceleración radial de magnitud <b>ω²r</b>. Como el Li₂CO₃ es más denso que el agua, la diferencia de densidades favorece su migración hacia radios mayores.</p><div class="guide-eq">G(r) = ω² r / g</div><p><b>Clave:</b> duplicar las rpm cuadruplica la aceleración a igual radio. El valor de G mostrado en el panel se calcula en la pared del tambor (r = R); dentro del líquido es menor a radios menores.</p></div></details><details><summary>04 · Trayectoria real del modelo: radial + axial</summary><div class="guide-body"><p>La partícula se desplaza <b>radialmente</b> hacia la pared y, al mismo tiempo, <b>axialmente</b> con el flujo del líquido. Su trayectoria resulta curvada. La GE12 desprecia la inercia de la partícula y utiliza Stokes para expresar su velocidad radial:</p><div class="guide-eq">dr/dt = [(ρₚ − ρ) dₚ² ω² / (18 μ)] r</div><p>El avance axial se aproxima con velocidad media uniforme:</p><div class="guide-eq">dz/dt = Qᵥ / [π (R² − r₀²)]</div><p><b>En la animación:</b> amarillo = partícula en tránsito; verde = alcanzó la pared; rosa = llegó a la salida antes de tocarla. Es una clasificación didáctica bajo estas hipótesis.</p></div></details><details><summary>05 · Tiempo de residencia y diámetro crítico</summary><div class="guide-body"><p>El <b>tiempo de residencia</b> es el tiempo disponible para que una partícula llegue a la pared antes de abandonar el equipo:</p><div class="guide-eq">tᵣₑₛ = π (R² − r₀²) b / Qᵥ</div><p>El <b>diámetro crítico dₚ,crit</b> (fijado en 0,491 µm para todos los modos de esta demostración) corresponde a la partícula que, comenzando en r₀, alcanza R justo al terminar ese tiempo. Bajo el modelo ideal, partículas mayores tienen más facilidad para ser retenidas; las menores pueden escapar.</p><p><b>Probá:</b> aumentá las rpm manteniendo el caudal fijo. En un cálculo físico recalculado, disminuiría el diámetro crítico; aquí se mantiene fijo en 0,491 µm. Si aumenta Qᵥ, el tiempo de residencia cae; el valor crítico mostrado permanece fijo por configuración didáctica.</p></div></details><details><summary>06 · ¿Qué significa el factor Σ?</summary><div class="guide-body"><p>El factor <b>Σ (sigma)</b> expresa la <b>capacidad equivalente de sedimentación por gravedad</b> de la centrífuga. Según la GE12, equivale al área transversal de un sedimentador gravitatorio ideal que tendría la misma capacidad de separación.</p><div class="guide-eq">Σ = π b ω² (R² − r₀²) / [g ln(R/r₀)]</div><div class="guide-eq">Qᵥ = vₜ,g,crit · Σ</div><p>Σ tiene unidades de <b>m²</b>. Depende de la geometría y la velocidad de giro; <b>no</b> es el área física de la carcasa. La comparación entre equipos mediante Qᵥ/Σ requiere precaución si sus configuraciones y patrones de flujo son diferentes.</p></div></details><details><summary>07 · ¿Qué datos son del TP10 y cuáles son supuestos?</summary><div class="guide-body"><p><b>Del ejercicio:</b> cristales de Li₂CO₃ con densidad 2110 kg/m³, diámetro equivalente 5 µm, suspensión al 40 % en masa, temperatura de 80 °C y caudal de referencia de 0,10 m³/s. El inciso de producción menciona 4,3 t/h.</p><p><b>Adoptados para explorar:</b> rpm, R, r₀ y b; también las propiedades aproximadas del agua a 80 °C (ρ ≈ 971,8 kg/m³ y μ ≈ 0,000355 Pa·s). El enunciado no identifica inequívocamente un modelo comercial de centrífuga.</p><p><b>Limitaciones:</b> el modelo de Stokes describe partículas individuales idealizadas. Una suspensión con 40 % m/m puede presentar interacciones, sedimentación impedida y efectos de flujo que aquí no se calculan. No se dimensionan motor, esfuerzos mecánicos, descarga real de sólidos ni seguridad industrial.</p></div></details></div><div class="guide-task"><b>Recorrido sugerido para estudiar:</b> 1) elegí «Mezcla»; 2) iniciá la rotación y abrí el corte; 3) observá qué partículas alcanzan la pared; 4) observá las partículas con la alimentación continua; 5) compará el diámetro crítico y Σ en el panel de ingeniería.</div></section><section class="labplus" id="labplus"><div class="eyebrow">LABORATORIO AVANZADO · GE12, DIAPOSITIVAS 36–39</div><h2>Exploración guiada del equipo y de las partículas</h2><p class="muted">Modelo tubular de sedimentación con orientación horizontal ilustrativa. <b>La configuración mecánica exacta del equipo no está especificada en el TP10.</b></p><div class="labtabs"><button id="lp-components" class="active">01 · Componentes</button><button id="lp-stages">02 · Funcionamiento</button><button id="lp-particle">03 · Seguir partícula</button><button id="lp-charts">04 · Gráficos</button><button id="lp-check">05 · Validez física</button></div><div id="lp-content" class="labhero">Seleccioná un módulo para comenzar.</div><div class="labgrid" style="margin-top:14px"><div class="labcard"><h3>Partícula testigo · trayectoria calculada</h3><div id="lp-live" class="labstat">Seleccioná «Seguir partícula» para iniciar el seguimiento.</div><div style="margin-top:10px"><button id="lp-follow">◎ Seleccionar partícula testigo</button> <button id="lp-clear">Limpiar selección</button></div></div><div class="labcard"><h3>Posición radial frente al tiempo</h3><canvas id="lp-plot" width="600" height="300"></canvas><p>Curva analítica r(t) = rᵢ · exp(kt). Línea punteada: pared del tambor.</p></div></div><div class="labnotice" style="margin-top:14px"><b>Interpretación responsable:</b> las trayectorias son soluciones del modelo de Stokes de la GE12, con flujo axial uniforme. El equipo mostrado es una maqueta conceptual: el motor, el acoplamiento y las tuberías no son un plano industrial validado. No se estima eficiencia real de una suspensión al 40 % m/m.</div></section></main><script id="organize-application-ui">
+(function(){
+  const panel=document.querySelector('aside.controls');
+  const dock=document.getElementById('actionDock');
+  if(!panel||!dock)return;
+  const heading=panel.querySelector('h2');
+  if(heading)heading.textContent='Parámetros de simulación';
+  const intro=panel.querySelector(':scope > p');
+  if(intro)intro.remove();
+  function segment(title, className){
+    const el=document.createElement('div');
+    el.className='dock-segment '+(className||'');
+    const h=document.createElement('h3');h.textContent=title;el.appendChild(h);dock.appendChild(el);
+    return el;
+  }
+  const mainButtons=panel.querySelector(':scope > .buttons');
+  if(mainButtons){segment('Controles y vistas','main').appendChild(mainButtons);}
+  const viewerActions=document.getElementById('viewerActions');
+  if(viewerActions){
+    const speedSlider=document.getElementById('playbackSpeed');
+    const speedValue=document.getElementById('playbackValue');
+    if(speedSlider && speedValue){
+      const speedBox=document.createElement('div');
+      speedBox.id='viewerSpeed';
+      const speedHeader=document.createElement('div');speedHeader.className='speedTop';
+      const speedLabel=document.createElement('label');speedLabel.htmlFor='playbackSpeed';speedLabel.textContent='⏱ Velocidad de reproducción';
+      speedHeader.append(speedLabel,speedValue);
+      speedBox.append(speedHeader,speedSlider);
+      viewerActions.appendChild(speedBox);
+    }
+    for(const id of ['play','reset']){const button=document.getElementById(id);if(button)viewerActions.appendChild(button);}
+    // Controles de visualización dentro del cuadro 3D; conservan sus IDs y eventos.
+    const viewSwitches=document.createElement('div');
+    viewSwitches.id='viewerViewSwitches';
+    viewSwitches.setAttribute('role','group');
+    viewSwitches.setAttribute('aria-label','Visualización del modelo');
+    const guideButton=document.createElement('button');guideButton.id='guideToggle';guideButton.type='button';guideButton.textContent='🎓 Recorrido guiado';viewSwitches.appendChild(guideButton);
+    for(const id of ['trailsToggle','labelsToggle']){
+      const button=document.getElementById(id);
+      if(button)viewSwitches.appendChild(button);
+    }
+    document.querySelector('.viewer').appendChild(viewSwitches);
+
+  }
+  const groupOf=(id)=>document.getElementById(id)?.closest('.group');
+  const modes=groupOf('mode-exp');
+  if(modes){
+    modes.id='operationModePanel';
+    panel.insertBefore(modes, panel.querySelector(':scope > .group'));
+    const title=modes.querySelector(':scope > .row b');
+    if(title)title.textContent='Modo de operación';
+  }
+  const productionGroup=groupOf('qmSlider');
+  if(productionGroup){
+    productionGroup.id='productionExploration';
+    productionGroup.hidden=true;
+    productionGroup.style.display='none';
+    const hint=productionGroup.querySelector('p');
+    if(hint)hint.textContent='Ajustá la producción para explorar cómo cambia el diámetro crítico y la separación.';
+  }
+  const distribution=groupOf('monoMode');
+  if(distribution){
+    const topButtons=distribution.querySelector(':scope > .buttons');
+    const info=distribution.querySelector('#distributionInfo');
+    const target=segment('Tipo de suspensión');
+    if(topButtons)target.appendChild(topButtons);
+    if(info)target.appendChild(info);
+    const title=distribution.querySelector(':scope > .row');
+    if(title)title.remove();
+  }
+  const quick=groupOf('quick5');
+  // Mantener botones rápidos en el DOM para compatibilidad con eventos existentes, pero ocultos.
+  if(quick){quick.style.display='none';quick.setAttribute('aria-hidden','true');}
+  const feed=groupOf('feed');
+  if(feed){feed.style.display='none';feed.setAttribute('aria-hidden','true');}
+  const playback=document.getElementById('playbackGroup');
+  if(playback)playback.remove(); // El slider y el indicador ya están en el visor.
+
+  // La guía larga no ocupa el panel de parámetros.
+  for(const group of [...panel.querySelectorAll(':scope > .group')]){
+    if(group.textContent.includes('Qué es cada cosa'))group.remove();
+  }
+  const notice=panel.querySelector(':scope > .notice');if(notice)notice.remove();
+  // Elimina únicamente el texto redundante para dejar el control polidisperso en el lateral.
+  const poly=document.getElementById('polySettings');
+  if(poly){
+    const texts=[...poly.querySelectorAll('p')];
+    if(texts.length>1)texts[texts.length-1].remove();
+  }
+})();
+</script><script>
+// El recorrido guiado se aloja en la columna derecha, sin cubrir la cámara.
+(function(){
+ const panel=document.querySelector('aside.controls');
+ const guide=document.getElementById('guidePanel');
+ if(panel&&guide)panel.appendChild(guide);
+ if(panel){const coach=document.createElement('section');coach.id='controlsCoach';coach.setAttribute('aria-live','polite');coach.innerHTML='<button id="coachExit" type="button" class="coachExit" aria-label="Cerrar recorrido de controles">✕</button><div id="coachCount" class="coachHeading">CONOCIENDO LOS CONTROLES</div><h3 id="coachTitle"></h3><p id="coachDescription"></p><div class="coachActions"><button id="coachBack" type="button">← Anterior</button><button id="coachReplay" type="button">🔊 Repetir</button><button id="coachNext" type="button" class="primary">Siguiente →</button></div>';panel.insertBefore(coach,panel.firstChild);}
+
+})();
+</script><script id="welcome-behavior">
+(function(){
+ const modal=document.getElementById('startChoice');
+ const guide=document.getElementById('startGuideBtn');
+ const skip=document.getElementById('startSkipBtn');
+ function dismiss(){modal.hidden=true;}
+ skip.addEventListener('click',dismiss);
+ guide.addEventListener('click',()=>{
+   const target=document.getElementById('guideToggle');
+   if(!target||typeof target.onclick!=='function'){
+     guide.textContent='Cargando modelo 3D…';
+     return;
+   }
+   dismiss();target.click();
+ });
+ document.addEventListener('keydown',e=>{
+   if(modal.hidden)return;
+   if(e.key==='Escape'){e.preventDefault();dismiss();}
+ });
+})();
+</script><script type="module">
+let playbackFactor=1;const playbackSteps=[0.001,0.005,0.02,0.1,1];function playbackLabel(v){return v.toLocaleString('es-AR',{maximumFractionDigits:3})+'×'}function setPlaybackFactor(v){playbackFactor=v;document.getElementById('playbackValue').textContent=playbackLabel(v);document.getElementById('playbackSpeed').value=String(Math.round(100*(Math.log(v/0.001)/Math.log(1000))));document.querySelectorAll('[data-playback]').forEach(b=>b.classList.toggle('active',Math.abs(Number(b.dataset.playback)-v)<1e-8));}document.getElementById('playbackSpeed').addEventListener('input',e=>{let x=Number(e.target.value)/100;setPlaybackFactor(Math.pow(1000,x)*0.001)});document.querySelectorAll('[data-playback]').forEach(b=>b.addEventListener('click',()=>setPlaybackFactor(Number(b.dataset.playback))));
+const $=id=>document.getElementById(id), f=(v,n=1)=>Number.isFinite(v)?v.toLocaleString('es-AR',{minimumFractionDigits:n,maximumFractionDigits:n}):'—';
+const rhoP=2110,rho=971.7978,mu=0.001162956391528869,rhoSl=1239.1791,g=9.80665,sigmaTarget=7498.3331;
+let THREE,scene,camera,renderer,rotor,outer,water,particles=[],trails=[],running=false,cut=true,mode='edu',axial=false,sim=0,last=0,raf=0,orbit={yaw:.53,pitch:.28,dist:24.2},orbitTarget={x:0,y:-0.2,z:0},drag=false,old={x:0,y:0};const N=100;let collectorParticles=[],collectorCount=0;let selectedParticle=null,labTab="components",labStage=0,dischargeDrops=[],fluidTracers=[],dischargeUntil=0,dischargeStart=0,feedOn=true,extraParticles=[],totalCaptured=0,totalEscaped=0;
+let transOn=false,sedimentLayer=null,sedimentVisual=0,sedimentParticles=[],depositionIndex=0,comparisonGuides=[];
+const DIAMETRO_CRITICO_FIJO_UM=0.491;
+let operatingMode='experimental', particleDp=5e-6, productionTph=4.3;
+let sizeMode='mono',polyMin=0.2,polyMax=10;function sampleDiameter(){return sizeMode==='mono'?particleDp:(polyMin+Math.random()*(polyMax-polyMin))*1e-6;}function particleK(p,d){return d.k*(p.dp/d.dp)**2;}// Colores por tamaño relativo al diámetro de corte ACTUAL (no colores por destino).
+// Banda cercana al corte: ±10 %, elegida solo con fines de visualización.
+const COLOR_BELOW=0xba86ff, COLOR_NEAR=0xffd166, COLOR_ABOVE=0x43e2c0;
+function classifyDiameter(dp,dcritMic=params().dcrit){const rel=(dp*1e6)/dcritMic;return rel<0.90?'below':rel<=1.10?'near':'above';}
+function transitColor(dp,dcritMic=params().dcrit){const cat=classifyDiameter(dp,dcritMic);return cat==='below'?COLOR_BELOW:cat==='near'?COLOR_NEAR:COLOR_ABOVE;}function renewParticle(p){p.dp=sampleDiameter();p.mesh.scale.setScalar(Math.max(.7,Math.min(1.75,.7+.105*p.dp*1e6)));p.mesh.material.color.setHex(transitColor(p.dp));}function refreshDistribution(){const poly=sizeMode==='poly';$('monoMode').classList.toggle('active',!poly);$('polyMode').classList.toggle('active',poly);$('polySettings').style.display=poly?'block':'none';$('distributionInfo').textContent=poly?'Cada cristal tiene su propio tamaño entre '+f(polyMin,1)+' y '+f(polyMax,1)+' µm.':'Todas las partículas tienen '+f(particleDp*1e6,1)+' µm.';$('polyMinText').textContent=f(polyMin,1)+' µm';$('polyMaxText').textContent=f(polyMax,1)+' µm';$('dpSlider').disabled=poly;$('dpmetric').textContent=poly?'Mixto':f(particleDp*1e6,2)+' µm';} 
+const geom={R:0.30,r0:0.15,L:1.5};
+const omegaTarget=Math.sqrt(sigmaTarget*g*Math.log(geom.R/geom.r0)/(Math.PI*geom.L*(geom.R*geom.R-geom.r0*geom.r0)));
+const rpmTarget=omegaTarget*30/Math.PI;
+function currentQ(){return operatingMode==='experimental' ? 0.10 : ((operatingMode==='industrial'?4.3:productionTph)*1000/3600)/rhoSl;}
+function currentModeLabel(){return operatingMode==='experimental' ? 'Ensayo · 0,10 m³/s' : (operatingMode==='industrial' ? 'Planta · 4,30 t/h' : 'Explorar · '+f(productionTph,2)+' t/h');}
+function params(){let rpm=rpmTarget,Q=currentQ(),dp=particleDp,R=geom.R,r0=geom.r0,L=geom.L,omega=omegaTarget,A=Math.PI*(R*R-r0*r0),t=A*L/Q,k=(rhoP-rho)*dp*dp*omega*omega/(18*mu),sigma=sigmaTarget,dcrit=DIAMETRO_CRITICO_FIJO_UM;return {rpm,Q,dp,R,r0,L,omega,A,t,k,sigma,dcrit,G:omega*omega*R/g,vax:Q/A,vt:(rhoP-rho)*g*dp*dp/(18*mu)};}
+// Escala adaptativa: el diámetro crítico siempre ocupa el centro geométrico del deslizador.
+// El cambio de escala no altera el diámetro crítico de referencia configurado.
+const DP_MIN=0.1,DP_MAX=10;
+function sliderToDiameter(position,critical=params().dcrit){
+ const t=Math.max(0,Math.min(1,Number(position)/1000));
+ const c=Math.max(DP_MIN+0.00001,Math.min(DP_MAX-0.00001,critical));
+ return t<=0.5?DP_MIN+(c-DP_MIN)*t*2:c+(DP_MAX-c)*(t-0.5)*2;
+}
+function diameterToSlider(diameter,critical=params().dcrit){
+ const c=Math.max(DP_MIN+0.00001,Math.min(DP_MAX-0.00001,critical));
+ const d=Math.max(DP_MIN,Math.min(DP_MAX,diameter));
+ return Math.round(1000*(d<=c?0.5*(d-DP_MIN)/(c-DP_MIN):0.5+0.5*(d-c)/(DP_MAX-c)));
+}
+function updateDiameterControl(d){
+ const slide=$('dpSlider');if(!slide)return;
+ slide.value=diameterToSlider(particleDp*1e6,d.dcrit);
+ $('dpCriticalValue').textContent=f(d.dcrit,3)+' µm';
+ const ratio=particleDp*1e6/d.dcrit;
+ const state=ratio<0.9?['#ba86ff','MENOR que el diámetro crítico']:ratio<=1.1?['#ffd166','CERCA del diámetro crítico (±10 %)']:['#43e2c0','MAYOR que el diámetro crítico'];
+ const stat=$('dpSizeStatus');stat.style.color=state[0];stat.textContent='● '+state[1];
+ slide.setAttribute('aria-valuetext',f(particleDp*1e6,3)+' micrómetros, '+state[1]+', diámetro crítico '+f(d.dcrit,3)+' micrómetros');
+}
+function updateUI(){let p=params();updateDiameterControl(p);$('sigma').innerHTML=f(p.sigma,2)+' m²';$('dcrit').textContent=f(p.dcrit,3)+' µm';$('dpmetric').textContent=sizeMode==='poly'?'Mixto':f(p.dp*1e6,2)+' µm';$('ratioMetric').textContent=sizeMode==='poly'?'Variable':f((p.dp*1e6)/p.dcrit,2);$('qvMetric').textContent=f(p.Q,6)+' m³/s';$('modeMetric').textContent=currentModeLabel();$('tres').textContent=f(p.t,2)+' s';$('gforce').textContent=f(p.G,0)+' × g';$('vax').textContent=f(p.vax,2)+' m/s';$('vt').textContent=f(p.vt,5)+' m/s';if($('dpRead'))$('dpRead').textContent=f(p.dp*1e6,2)+' µm';if($('qmRead'))$('qmRead').textContent=f(productionTph,2)+' t/h';return p;}
+function mat(color,opacity=1,metal=.25){return new THREE.MeshStandardMaterial({color,metalness:metal,roughness:.35,transparent:opacity<1,opacity,side:THREE.DoubleSide,depthWrite:opacity>=1});}function cylinder(r,l,color,opacity=1){let m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,l,64,1,true),mat(color,opacity,.65));m.rotation.z=Math.PI/2;return m;}function ring(r,x,color,t=.04){let m=new THREE.Mesh(new THREE.TorusGeometry(r,t,10,64),mat(color,1,.8));m.rotation.y=Math.PI/2;m.position.x=x;return m;}function pipe(a,b,r,color){let v=new THREE.Vector3().subVectors(b,a),m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,v.length(),18),mat(color,1,.5));m.position.copy(a).addScaledVector(v,.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),v.normalize());return m;}
+const feedX=-10.8,receiverX=10.8;
+let feedLiquid,receiverLiquid,feedMarkers=[],receiverMarkers=[],flowTracers=[],clarifierFlow=[];
+let guideSamples=[],guideActive=false,guideStep=0,guideSavedView=null,guideSavedRunning=false,currentGuideLabelIndexes=null,guideDemoTime=0,guideLastPhases=[0,0,0];
+let controlsTourActive=false,controlsTourStep=0,controlsTourUtterance=null,coachAdvanceId=null;
+function build(){scene=new THREE.Scene();scene.background=new THREE.Color('#081320');scene.fog=new THREE.Fog('#081320',24,60);camera=new THREE.PerspectiveCamera(43,1,.1,80);cam();scene.add(new THREE.HemisphereLight(0xeaf8ff,0x223147,2.4));let key=new THREE.DirectionalLight(0xffffff,3.3);key.position.set(4,7,7);scene.add(key);let blue=new THREE.PointLight(0x1bb9ff,45);blue.position.set(-4,2,3);scene.add(blue);let floor=new THREE.Mesh(new THREE.PlaneGeometry(48,48),mat(0x122137));floor.rotation.x=-Math.PI/2;floor.position.y=-2.05;scene.add(floor);let grid=new THREE.GridHelper(40,40,0x29445d,0x1a2d42);grid.position.y=-2.045;scene.add(grid);
+outer=new THREE.Group();scene.add(outer);outer.add(cylinder(1.66,5.4,0x94a3b8,.14));for(let x of [-2.7,2.7])outer.add(ring(1.66,x,0xe2e8f0,.075));for(let x of [-1.75,1.75]){let foot=new THREE.Mesh(new THREE.BoxGeometry(.5,.8,1.8),mat(0x65798c,1,.7));foot.position.set(x,-1.72,0);scene.add(foot);}rotor=new THREE.Group();scene.add(rotor);rotor.add(cylinder(1.42,4.9,0x6c879c,.16));for(let x of [-2.45,2.45])rotor.add(ring(1.42,x,0xc8d5e4,.065));// Volumen anular de líquido: toda la longitud útil del rotor y hasta su pared interna.
+// Visualmente se muestra un único volumen de líquido para evitar el efecto "tubo dentro de tubo".
+// El radio interno r0 se mantiene en los cálculos y en las trayectorias, pero no se dibuja como una pared.
+const waterOuter=1.395,waterHalf=2.425;
+water=new THREE.Mesh(new THREE.CylinderGeometry(waterOuter,waterOuter,waterHalf*2,96,1,true),mat(0x0693c5,liquidOpacity,.06));
+water.rotation.z=Math.PI/2;
+water.material.depthWrite=false;
+water.renderOrder=1;
+rotor.add(water);
+// Cámara colectora ilustrativa FIJA en el extremo de salida.
+// El líquido redirige allí su flujo hacia la boquilla axial: no es migración centrípeta espontánea de los sólidos.
+const collectorCone=new THREE.Mesh(
+ new THREE.CylinderGeometry(.89,.20,.45,72,1,true),
+ mat(0x72d8ee,.34,.15)
+);
+collectorCone.rotation.z=Math.PI/2;
+collectorCone.position.x=2.47;
+collectorCone.material.depthWrite=false;
+scene.add(collectorCone);
+scene.add(ring(.89,2.245,0xa9eafb,.043));
+scene.add(ring(.20,2.695,0xbceeff,.038));
+// Tubo de toma, que conecta físicamente la cámara con el ducto externo.
+const outletNeck=pipe(new THREE.Vector3(2.67,0,0),new THREE.Vector3(3.15,0,0),.18,0x2599b8);
+outletNeck.material=mat(0x42c6e7,.48,.25);scene.add(outletNeck);
+// Marcadores de flujo del líquido, independientes de los cristales, para hacer visible la continuidad.
+clarifierFlow.length=0;
+for(let i=0;i<28;i++){
+ const m=new THREE.Mesh(new THREE.SphereGeometry(.025,8,8),new THREE.MeshBasicMaterial({color:0x8deaff,transparent:true,opacity:.8}));
+ m.visible=false;scene.add(m);clarifierFlow.push({mesh:m,phase:i/28,ang:i*2.399963});
+}
+// NUEVO TREN DE ALIMENTACION / DESCARGA AXIAL - piezas fijas, no solidarias al rotor
+function staticTank(x,feed){
+  const shell=new THREE.Mesh(new THREE.CylinderGeometry(1.22,1.22,2.55,64,1,true),mat(0x9bbdd3,.20,.1));
+  shell.position.set(x,-.55,0);scene.add(shell);
+  const bottom=new THREE.Mesh(new THREE.CylinderGeometry(1.24,1.24,.12,64),mat(0x587187,1,.6));bottom.position.set(x,-1.89,0);scene.add(bottom);
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(1.22,.055,10,64),mat(0xcedde9,.95,.65));rim.rotation.x=Math.PI/2;rim.position.set(x,.72,0);scene.add(rim);
+  const liquid=new THREE.Mesh(new THREE.CylinderGeometry(1.14,1.14,1.55,56),mat(feed?0x16a1c5:0x188abb,.28,.05));liquid.position.set(x,-1.33,0);scene.add(liquid);
+  for(let k=0;k<4;k++){const leg=new THREE.Mesh(new THREE.BoxGeometry(.18,.42,.18),mat(0x486076,1,.5));leg.position.set(x+(k%2?-.74:.74),-2.16,k>1?-.74:.74);scene.add(leg);}
+  for(let i=0;i<48;i++){
+    const m=new THREE.Mesh(new THREE.SphereGeometry(.034,8,8),mat(feed?0xffca69:0xfb6f91,1,.05));
+    const a=i*2.399963,rad=.93*Math.sqrt((i+.5)/48);
+    m.position.set(x+rad*Math.cos(a),-1.70+(i%8)*.16,rad*Math.sin(a));scene.add(m);
+    if(feed)feedMarkers.push(m);else receiverMarkers.push(m);
+  }
+  return liquid;
+}
+feedLiquid=staticTank(feedX,true);
+receiverLiquid=staticTank(receiverX,false);
+function tankLabel(txt,x){
+ const c=document.createElement('canvas');c.width=512;c.height=96;
+ const ctx=c.getContext('2d');ctx.fillStyle='rgba(6,20,34,.88)';ctx.fillRect(0,0,512,96);
+ ctx.strokeStyle='#37bde5';ctx.lineWidth=4;ctx.strokeRect(3,3,506,90);
+ ctx.font='bold 30px Arial';ctx.textAlign='center';ctx.fillStyle='#e5faff';ctx.fillText(txt,256,60);
+ const tx=new THREE.CanvasTexture(c);const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthTest:false}));
+ sprite.scale.set(2.8,.55,1);sprite.position.set(x,1.85,0);scene.add(sprite);
+}
+// Etiquetas de los tanques en superposición de pantalla, sin carteles 3D duplicados.
+labelGroup=new THREE.Group();scene.add(labelGroup);
+const componentLabels=[];
+function makeCallout(text,x,y,z){
+ const el=document.createElement('div');el.className='component-label';el.textContent=text;
+ document.getElementById('labelsOverlay').appendChild(el);
+ const svgNS='http://www.w3.org/2000/svg',svg=document.getElementById('labelLeaders');
+ const line=document.createElementNS(svgNS,'line'),point=document.createElementNS(svgNS,'circle');point.setAttribute('r','3');svg.append(line,point);
+ componentLabels.push({text,anchor:new THREE.Vector3(x,y,z),el,line,point});
+}
+makeCallout('Tanque de alimentación',feedX,-.5,0);
+makeCallout('Ducto de alimentación',-6.5,0.08,0);
+makeCallout('Motor / accionamiento',-4.5,-.75,.2);
+makeCallout('Tambor / rotor',0,.95,1.15);
+makeCallout('Salida axial del clarificado',6.6,.08,0);
+makeCallout('Tanque receptor',receiverX,-.35,0);
+makeCallout('Sedimento en la pared',.2,-1,1.32);
+
+function makeGuideSample(x,y,z,color){
+ const halo=new THREE.Mesh(new THREE.SphereGeometry(.16,18,18),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.18,depthWrite:false}));
+ const core=new THREE.Mesh(new THREE.SphereGeometry(.07,18,18),new THREE.MeshBasicMaterial({color}));
+ const positions=new Float32Array(3*48);const history=[];
+ const trailGeo=new THREE.BufferGeometry();trailGeo.setAttribute('position',new THREE.BufferAttribute(positions,3));
+ const trail=new THREE.Line(trailGeo,new THREE.LineBasicMaterial({color,transparent:true,opacity:.7}));
+ halo.position.set(x,y,z);core.position.set(x,y,z);trail.visible=false;halo.visible=false;core.visible=false;scene.add(trail);scene.add(halo);scene.add(core);guideSamples.push({halo,core,trail,positions,history,base:new THREE.Vector3(x,y,z)});
+}
+makeGuideSample(-1.05,.32,.14,0xba86ff);
+makeGuideSample(0.0,.62,.12,0xffd166);
+makeGuideSample(1.0,1.06,.10,0x43e2c0);
+updateLabels=function(){
+ const overlay=document.getElementById('labelsOverlay'),svg=document.getElementById('labelLeaders');
+ if(!camera||!renderer||!overlay)return;
+ const w=overlay.clientWidth,h=overlay.clientHeight;svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+ const visible=[];
+ for(let idx=0; idx<componentLabels.length; idx++){
+  const l=componentLabels[idx];
+  const pos=l.anchor.clone().project(camera),x=(pos.x+1)*w/2,y=(1-pos.y)*h/2;
+  const allowedByGuide=!guideActive||currentGuideLabelIndexes===null||currentGuideLabelIndexes.includes(idx);
+  const inView=showLabels&&!pov&&allowedByGuide&&pos.z>-1&&pos.z<1&&x>-12&&x<w+12&&y>-12&&y<h+12;
+  l.el.style.display=inView?'flex':'none';l.line.style.display=inView?'':'none';l.point.style.display=inView?'':'none';
+  if(!inView)continue;
+  let width=l.el.offsetWidth||145,height=l.el.offsetHeight||34;
+  const lx=Math.max(width/2+9,Math.min(w-width/2-9,x));
+  const offset=(l.text==='Ducto de alimentación'?46:66);
+  const ly=Math.max(height/2+12,Math.min(h-height/2-35,y-offset));
+  visible.push({l,x,y,lx,ly,width,height});
+ }
+ // Keep callouts separate and inside the viewport as the camera moves.
+ for(let i=0;i<visible.length;i++){
+  const a=visible[i];
+  for(let pass=0;pass<12;pass++){
+   const overlap=visible.slice(0,i).find(b=>Math.abs(a.lx-b.lx)<(a.width+b.width)/2+8&&Math.abs(a.ly-b.ly)<(a.height+b.height)/2+9);
+   if(!overlap)break;
+   const down=overlap.ly+(overlap.height+a.height)/2+10;
+   const up=overlap.ly-(overlap.height+a.height)/2-10;
+   a.ly=down<h-a.height/2-40?down:Math.max(a.height/2+12,up);
+  }
+  const {l,x,y,lx,ly,height}=a;
+  l.el.style.left=lx+'px';l.el.style.top=ly+'px';
+  const endY=ly<y?ly+height/2:ly-height/2;
+  l.line.setAttribute('x1',x);l.line.setAttribute('y1',y);l.line.setAttribute('x2',lx);l.line.setAttribute('y2',endY);
+  l.point.setAttribute('cx',x);l.point.setAttribute('cy',y);
+ }
+}
+// Alimentación por conexión lateral inferior del tanque; ascenso y llegada coaxial al rotor.
+
+function drawDuct(way,radius,tint){
+  for(let j=1;j<way.length;j++){
+    const a=new THREE.Vector3(...way[j-1]),b=new THREE.Vector3(...way[j]);
+    const inner=pipe(a,b,radius,tint);scene.add(inner);
+    const sh=pipe(a,b,radius*1.24,0x7bd8ff);sh.material=mat(0x74cfff,.17,.1);scene.add(sh);
+    if(j<way.length-1){let elbow=new THREE.Mesh(new THREE.SphereGeometry(radius*1.27,18,14),mat(0x63bcd5,1,.35));elbow.position.copy(b);scene.add(elbow);}
+  }
+}
+drawDuct(feedWay,.13,0x1599be);
+drawDuct(recvWay,.15,0x1aaccd);
+// Collar fijo de entrada y salida: indica la interfaz entre boquilla y rotor.
+for(let x of [-2.82,2.82])scene.add(ring(.27,x,0xaed0e0,.045));
+// Indicadores de flujo en ductos (reutilizables)
+for(let i=0;i<34;i++){
+ const mesh=new THREE.Mesh(new THREE.SphereGeometry(.038,9,8),mat(i%4===0?0xffcc63:0x77dcfa,1,.08));mesh.visible=true;scene.add(mesh);
+ flowTracers.push({mesh,seed:i/34,feed:i<18,phase:i*1.7});
+}
+// Tanque receptor: las partículas escapadas quedan en el líquido, no desaparecen.
+const collectedGeo=new THREE.SphereGeometry(.035,8,8),collectedMat=mat(0xfb6f91,1,.08);
+for(let i=0;i<100;i++){let m=new THREE.Mesh(collectedGeo,collectedMat);m.visible=false;scene.add(m);collectorParticles.push(m);}
+scene.add(pipe(new THREE.Vector3(1.65,-1.5,0),new THREE.Vector3(1.65,-2.15,0),.13,0xe9b14a));
+// INDUSTRIAL SKID: non-process structural and accessory detail (conceptual)
+const steel=0x4a6075, dark=0x263649, bolt=0xc9d5df, hazard=0xe6ad37;
+function box(w,h,d,x,y,z,c=steel,met=.55){let m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(c,1,met));m.position.set(x,y,z);scene.add(m);return m;}
+function smallCyl(radius,length,x,y,z,color=bolt,axis='x'){let m=cylinder(radius,length,color);if(axis==='y')m.rotation.set(0,0,0);m.position.set(x,y,z);scene.add(m);return m;}
+// welded base frame, anchor feet, cross members
+for(let z of [-1.12,1.12])box(8.4,.18,.18,0,-2.05,z,0x364b60);
+for(let x of [-3.8,-1.3,1.3,3.8]){box(.18,.18,2.45,x,-2.05,0,0x364b60);for(let z of [-1.1,1.1]){box(.4,.1,.34,x,-2.16,z,0x60778a);smallCyl(.055,.12,x,-2.12,z,0xaec4d4,'y');}}
+// bearing blocks and exposed drive shaft
+for(let x of [-2.95,2.95]){box(.5,.57,.72,x,-1.48,0,0x526a7c);smallCyl(.22,.56,x,-1.12,0,0xb6c8d4);for(let z of [-.26,.26])smallCyl(.045,.12,x,-1.16,z,bolt,'y');}
+// flange assemblies, repeated fasteners
+for(let x of [-2.72,2.72]){scene.add(ring(1.69,x,0x526579,.115));for(let j=0;j<20;j++){let a=j*2*Math.PI/20;smallCyl(.047,.11,x,1.7*Math.cos(a),1.7*Math.sin(a),bolt);}}
+// motor and reduction coupling, left of process housing
+let motor=smallCyl(.55,1.05,-4.5,-.98,0,0x2d718b);for(let j=0;j<12;j++){let a=j*2*Math.PI/12;let rib=box(.8,.08,.075,-4.5,-.98+.55*Math.cos(a),.55*Math.sin(a),0x69a0ad);rib.rotation.x=a;}
+smallCyl(.43,.14,-5.07,-.98,0,0x213e55);smallCyl(.18,.7,-3.65,-.98,0,0xa8c3d0);box(1.15,.35,.78,-4.5,-1.67,0,0x3e566c);box(.56,.27,.36,-4.47,-.28,0,0x244d67);
+// safety coupling guard, perforation suggestion
+let guard=smallCyl(.34,.66,-3.45,-.98,0,0xd0a23a);guard.material=mat(0xd0a23a,.42,.5);for(let j=0;j<6;j++){let a=j*Math.PI/3;let sl=box(.46,.025,.04,-3.45,-.98+.34*Math.cos(a),.34*Math.sin(a),0x1c2836);sl.rotation.x=a;}
+// Válvula sobre alimentación fija y manómetro en descarga fija; sin conexión al rotor giratorio.
+let valveBody=smallCyl(.22,.36,-5.35,0,0,0x3c7c9e);
+scene.add(pipe(new THREE.Vector3(-5.35,.14,0),new THREE.Vector3(-5.35,.59,0),.045,0xa8bbc8));
+let wheel=new THREE.Mesh(new THREE.TorusGeometry(.26,.034,8,24),mat(0xe3b74d));wheel.rotation.x=Math.PI/2;wheel.position.set(-5.35,.64,0);scene.add(wheel);
+scene.add(pipe(new THREE.Vector3(6.6,.12,0),new THREE.Vector3(6.6,.78,0),.035,0xc4d3dd));
+let gauge=smallCyl(.19,.1,6.6,.89,0,0xe6eef5);gauge.rotation.set(Math.PI/2,0,0);
+// solids outlet: explicitly batch/intermittent, with capped collection receiver
+smallCyl(.2,.08,1.65,-2.05,0,0xe9b14a,'y');box(.75,.15,.68,1.65,-2.32,0,0x9a7846);
+// industrial label plates and safety-striped inspection region
+let plate=box(.7,.28,.035,.5,.4,1.68,0x193d58);plate.rotation.y=0;
+for(let j=0;j<6;j++){let stripe=box(.1,.17,.025,-1.4+j*.19,-.52,1.685,j%2?0x1b2a36:hazard);stripe.rotation.z=-.38;}
+// cutaway transparency remains controlled by existing button
+let sphere=new THREE.SphereGeometry(.035,9,8);for(let i=0;i<N;i++){let mesh=new THREE.Mesh(sphere,mat(0xffd45d,1,.1));scene.add(mesh);let geometry=new THREE.BufferGeometry(),positions=new Float32Array(3*45);geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));let trail=new THREE.Line(geometry,new THREE.LineBasicMaterial({color:0x76c9fa,transparent:true,opacity:.43}));scene.add(trail);mesh.userData.particleIndex=i;particles.push({mesh,trail,positions,phase:i*2.399963,initial:i===0?.02:i===1?.5:i===2?.97:(.02+(i*.61803398875%1)*.97),delay:i/N*.92,finish:'pending',birth:0,completed:false,dp:particleDp});renewParticle(particles[particles.length-1]);}// Descarga intermitente de sólidos: no ocurre simultáneamente con la centrifugación tubular.
+// Capa anular didáctica de sedimento: materializada dentro de la pared interior.
+const sedGeo=new THREE.CylinderGeometry(1.37,1.37,4.48,80,1,true);
+sedimentLayer=new THREE.Mesh(sedGeo,new THREE.MeshStandardMaterial({color:0x30d6a0,transparent:true,opacity:0.0,side:THREE.DoubleSide,roughness:.8,depthWrite:false}));
+sedimentLayer.rotation.z=Math.PI/2;sedimentLayer.position.x=0;scene.add(sedimentLayer);
+// Granos de sedimento persistentes: cada retención crea un punto fijo en la pared del tambor.
+const depositGeometry=new THREE.SphereGeometry(.024,7,6);
+for(let j=0;j<350;j++){const grain=new THREE.Mesh(depositGeometry,new THREE.MeshStandardMaterial({color:j%5===0?0x8df0ca:0x46d4a7,roughness:.8}));grain.visible=false;rotor.add(grain);sedimentParticles.push(grain);}
+
+// Trayectorias de comparación: una curva y una esfera móvil para cada diámetro.
+for(let i=0;i<2;i++){
+ const color=i===0?0xc18cff:0x54e2ce;
+ const geometry=new THREE.BufferGeometry(),arr=new Float32Array(3*100);
+ geometry.setAttribute('position',new THREE.BufferAttribute(arr,3));
+ const line=new THREE.Line(geometry,new THREE.LineBasicMaterial({color,transparent:true,opacity:.95,depthTest:false}));line.renderOrder=10;
+ const marker=new THREE.Mesh(new THREE.SphereGeometry(.075,12,10),new THREE.MeshBasicMaterial({color,depthTest:false}));marker.renderOrder=11;
+ line.visible=false;marker.visible=false;scene.add(line,marker);comparisonGuides.push({line,marker,arr});
+}
+const dischargeGeo=new THREE.SphereGeometry(.042,8,8),dischargeMat=mat(0xffa83b,1,.05);
+for(let j=0;j<85;j++){let m=new THREE.Mesh(dischargeGeo,dischargeMat);m.visible=false;scene.add(m);dischargeDrops.push({mesh:m,seed:j/85});}
+renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.setClearColor(0x081320);$('viewport').appendChild(renderer.domElement);renderer.domElement.style.width='100%';renderer.domElement.style.height='100%';renderer.domElement.style.touchAction='none';resize();}
+function animateCollectorFlow(){
+ for(const f of clarifierFlow){
+   f.mesh.visible=running;
+   if(!running)continue;
+   const t=(sim*.22+f.phase)%1;
+   // Primera zona: flujo axial dentro del tambor; segunda: convergencia en el colector; tercera: boquilla.
+   let x,r;
+   if(t<.68){let u=t/.68;x=.65+1.58*u;r=.72+(.09*Math.sin(f.ang+u*4));}
+   else if(t<.91){let u=(t-.68)/.23;x=2.23+.46*u;r=(.72*(1-u)+.11*u);}
+   else {let u=(t-.91)/.09;x=2.69+.47*u;r=.08;}
+   const theta=f.ang+sim*.35;
+   f.mesh.position.set(x,r*Math.cos(theta),r*Math.sin(theta));
+ }
+}
+
+function cam(){camera.position.set(orbitTarget.x+orbit.dist*Math.sin(orbit.yaw)*Math.cos(orbit.pitch),orbitTarget.y+orbit.dist*Math.sin(orbit.pitch),orbitTarget.z+orbit.dist*Math.cos(orbit.yaw)*Math.cos(orbit.pitch));camera.lookAt(orbitTarget.x,orbitTarget.y,orbitTarget.z);}function moveWalk(dt){if(pov)return;let mv=0;const speed=(keyState['ShiftLeft']||keyState['ShiftRight']?9.5:5.2)*dt;const dx=orbitTarget.x-camera.position.x,dz=orbitTarget.z-camera.position.z;let mag=Math.hypot(dx,dz)||1;const fx=dx/mag,fz=dz/mag,rx=fz,rz=-fx;if(keyState['KeyW']){orbitTarget.x+=fx*speed;orbitTarget.z+=fz*speed;mv=1;}if(keyState['KeyS']){orbitTarget.x-=fx*speed;orbitTarget.z-=fz*speed;mv=1;}if(keyState['KeyA']){orbitTarget.x+=rx*speed;orbitTarget.z+=rz*speed;mv=1;}if(keyState['KeyD']){orbitTarget.x-=rx*speed;orbitTarget.z-=rz*speed;mv=1;}if(mv)cam();}function resize(){if(!renderer)return;let el=$('viewport');renderer.setSize(el.clientWidth,el.clientHeight,false);camera.aspect=el.clientWidth/el.clientHeight;camera.updateProjectionMatrix();updateLabels();renderer.render(scene,camera);}
+function place(p,d,time){
+ let age=time-p.birth-p.delay*d.t*1.3;const pk=particleK(p,d);p.mesh.material.color.setHex(transitColor(p.dp,d.dcrit));
+ if(age<0){p.mesh.visible=false;p.trail.visible=false;return 'waiting';}
+ let rstart=d.r0+(d.R-d.r0)*p.initial;
+ let twall=pk>0?Math.log(d.R/rstart)/pk:Infinity;
+ let captured=twall<=d.t;
+ let t=Math.min(age,d.t),tTravel=Math.min(t,twall),r=Math.min(d.R,rstart*Math.exp(Math.min(pk*tTravel,20)));
+ let theta=p.phase+time*Math.min(d.omega/45,9),rv=.2+1.18*(r-d.r0)/(d.R-d.r0);
+ let atWall=captured&&age>=twall;
+ p.mesh.visible=true;
+ if(atWall){
+   // La partícula queda adherida a la pared; no sale durante la operación.
+   p.mesh.position.set(-2.3+4.6*twall/d.t,1.38*Math.cos(theta),1.38*Math.sin(theta));
+   p.mesh.material.color.setHex(transitColor(p.dp,d.dcrit));
+ }else if(age>=d.t&&!captured){
+   // Trayectoria CONTINUA: el cristal sale de la zona de sedimentación con su radio propio,
+   // ingresa a la cámara colectora y el flujo lo conduce a la boquilla axial.
+   const travel=Math.max(1.15,d.t*.75),u=Math.min(1,(age-d.t)/travel);
+   const rExit=.2+1.18*(Math.min(d.R,rstart*Math.exp(Math.min(pk*d.t,20)))-d.r0)/(d.R-d.r0);
+   const exitAngle=p.phase+time*Math.min(d.omega/45,9);
+   if(u<.28){
+     const q=u/.28,curve=q*q*(3-2*q),radius=rExit*(1-curve)+.12*curve;
+     const alpha=exitAngle;
+     p.mesh.position.set(2.30+.41*curve,radius*Math.cos(alpha),radius*Math.sin(alpha));
+   }else if(u<.90){
+     // La trayectoria ingresa a la boquilla y continúa por los mismos tramos del ducto.
+     const progress=(u-.28)/.62;
+     const entrance=[[2.71,0,0],[9.15,0,0],[9.15,1.28,0],[receiverX,1.28,0],[receiverX,.48,0]];
+     let whole=0;const lengths=[];
+     for(let j=1;j<entrance.length;j++){const a=entrance[j-1],b=entrance[j],len=Math.hypot(b[0]-a[0],b[1]-a[1],b[2]-a[2]);lengths.push(len);whole+=len;}
+     let dist=progress*whole;
+     for(let j=1;j<entrance.length;j++){
+       if(dist>lengths[j-1]&&j<entrance.length-1){dist-=lengths[j-1];continue;}
+       const v=lengths[j-1]?Math.min(1,dist/lengths[j-1]):0,a=entrance[j-1],b=entrance[j];
+       const radial=.12*Math.max(0,1-progress*14);
+       p.mesh.position.set(a[0]+(b[0]-a[0])*v,a[1]+(b[1]-a[1])*v+radial*Math.cos(exitAngle),radial*Math.sin(exitAngle));break;
+     }
+   }else{
+     const v=Math.min(1,(u-.90)/.10),xx=receiverX+.44*Math.sin(p.phase*2.4)*Math.sqrt(v),zz=.44*Math.cos(p.phase*1.7)*Math.sqrt(v);
+     p.mesh.position.set(xx,.48-1.75*v,zz);
+   }
+   p.mesh.material.color.setHex(transitColor(p.dp,d.dcrit));
+   if(u>=1){p.mesh.visible=false;}
+ }else{
+   p.mesh.position.set(-2.3+4.6*t/d.t,rv*Math.cos(theta),rv*Math.sin(theta));
+   p.mesh.material.color.setHex(transitColor(p.dp,d.dcrit));
+ }
+ p.trail.visible=showTrails && age<d.t*.98;
+ let maxT=Math.min(t,atWall?twall:d.t);
+ for(let j=0;j<45;j++){
+  let tt=maxT*j/44,rr=Math.min(d.R,rstart*Math.exp(Math.min(pk*tt,20))),vr=.2+1.18*(rr-d.r0)/(d.R-d.r0),ang=p.phase+time*Math.min(d.omega/45,9)-tt*Math.min(d.omega/45,9);
+  p.positions[j*3]=-2.3+4.6*tt/d.t;p.positions[j*3+1]=vr*Math.cos(ang);p.positions[j*3+2]=vr*Math.sin(ang);
+ }
+ p.trail.geometry.attributes.position.needsUpdate=true;p.trail.geometry.computeBoundingSphere();
+ p.trail.material.color.setHex(transitColor(p.dp,d.dcrit));
+ return atWall?'caught':age>=d.t?'escaped':'pending';
+}
+function streams(d){
+
+ let active=false; // Descarga manual fuera de esta simulación
+ dischargeDrops.forEach((p,j)=>{
+   p.mesh.visible=active;
+   if(!active)return;
+   let u=((performance.now()-dischargeStart)/1800+p.seed)%1;
+   p.mesh.position.set(1.65+.11*Math.sin(j*2.4),-1.48-.83*u,.09*Math.cos(j*1.9));
+ });
+}
+const feedWay=[[-10.1,-1.55,0],[-8.3,-1.55,0],[-8.3,0,0],[-2.70,0,0]];
+const recvWay=[[2.70,0,0],[9.15,0,0],[9.15,1.28,0],[10.8,1.28,0],[10.8,.48,0]];
+let showTrails=true,showSediment=true,showLabels=true,liquidOpacity=.28, presentationMode=false;let labelGroup,labelSprites=[];let updateLabels=()=>{};
+function updateVisualFlow(d){
+ const travel=(a,b,t)=>a+(b-a)*t;
+ for(const f of flowTracers){
+  const route=f.feed?feedWay:recvWay;
+  const lens=[];let total=0;
+  for(let j=1;j<route.length;j++){const a=route[j-1],b=route[j];const dl=Math.hypot(b[0]-a[0],b[1]-a[1],b[2]-a[2]);lens.push(dl);total+=dl;}
+  let distance=((sim*.18+f.seed*1.7)%1)*total;
+  for(let j=1;j<route.length;j++){
+    if(distance>lens[j-1]){distance-=lens[j-1];continue;}
+    const a=route[j-1],b=route[j],u=lens[j-1]?distance/lens[j-1]:0;
+    f.mesh.position.set(travel(a[0],b[0],u),travel(a[1],b[1],u),.04*Math.sin(f.phase+sim*2));break;
+  }
+  f.mesh.visible=running;
+ }
+ // Solo indicadores visuales: no se interpretan como volúmenes reales ni balance de masa.
+ const lv=Math.max(.26,.60-.00045*sim),rv=Math.min(.78,.24+.0005*sim);
+ const feedScale=.18+1.25*lv, recvScale=.18+1.25*rv;
+ feedLiquid.scale.y=feedScale;feedLiquid.position.y=-2.10+(1.55*feedScale)/2;
+ receiverLiquid.scale.y=recvScale;receiverLiquid.position.y=-2.10+(1.55*recvScale)/2;
+ $('receiverLevel').textContent=Math.round(rv*100)+' % (visual)';
+ for(let i=0;i<feedMarkers.length;i++)feedMarkers[i].visible=feedMarkers[i].position.y<-2.10+feedScale*1.45;
+ for(let i=0;i<receiverMarkers.length;i++)receiverMarkers[i].visible=receiverMarkers[i].position.y<-2.10+recvScale*1.45;
+}
+
+const GUIDE_STEPS=[
+ {labelIndex:[0],title:'1. Tanque de alimentación',text:'Acá se representa la suspensión de entrada: agua + cristales de Li₂CO₃. Desde este tanque parte la mezcla que alimenta a la centrífuga.',extra:'En el TP10, la suspensión contiene sólidos que luego pueden separarse por acción centrífuga.',view:{target:{x:feedX,y:-0.7,z:0},yaw:-1.35,pitch:.16,dist:7.6}},
+ {labelIndex:[1],title:'2. Ducto de alimentación',text:'Este ducto conduce la suspensión hacia el rotor. Su función es llevar el fluido hasta la entrada axial del equipo.',extra:'Didácticamente mostramos una tubería visible para que se entienda por dónde ingresa la alimentación.',view:{target:{x:-6.7,y:-0.7,z:0},yaw:-1.08,pitch:.14,dist:6.8}},
+ {labelIndex:[3],title:'3. Tambor / rotor',text:'En el tambor ocurre la separación. Todo el fluido gira y las partículas más densas tienden a migrar hacia la pared.',extra:'El rotor es la zona clave del proceso: allí compiten la migración radial de las partículas y el avance axial del flujo.',view:{target:{x:-0.2,y:-0.2,z:0},yaw:.18,pitch:.16,dist:8.2}},
+ {labelIndex:[6],title:'4. Sedimento en la pared',text:'Las partículas que sí alcanzan la pared interna quedan retenidas y forman una capa de sedimento.',extra:'En una centrífuga tubular de sedimentación, los sólidos retenidos se acumulan dentro del tambor y luego se retiran en otra etapa.',view:{target:{x:.35,y:-1.0,z:1.08},yaw:.1,pitch:.22,dist:6.0}},
+ {labelIndex:[4],title:'5. Salida axial del clarificado',text:'El líquido clarificado avanza hacia la salida axial y abandona el equipo por el ducto del lado derecho.',extra:'Las partículas muy pequeñas o que no alcanzan a sedimentar salen arrastradas con esta corriente de clarificado.',view:{target:{x:6.5,y:.02,z:0},yaw:.95,pitch:.10,dist:6.5}},
+ {labelIndex:null,title:'6. ¿Qué es el diámetro crítico?',text:'El diámetro crítico es el tamaño límite calculado para estas condiciones de operación. Sirve para estimar qué partículas pueden separarse y cuáles tenderán a escapar.',extra:'En el slider de diámetro, el valor crítico queda marcado en el centro. Violeta: menor que d crítico. Amarillo: cercano al crítico. Turquesa: mayor que d crítico.',view:{target:{x:0,y:.15,z:0},yaw:.52,pitch:.16,dist:8.8},samples:'all'},
+ {labelIndex:null,title:'7. Partícula menor que d crítico',text:'Esta partícula violeta representa un cristal más pequeño que el diámetro crítico. Puede desplazarse algo hacia afuera, pero normalmente no alcanza la pared antes de salir con el clarificado.',extra:'No va al eje por una fuerza especial: simplemente su migración radial es demasiado lenta para separarse dentro del tiempo disponible.',view:{target:{x:-1.05,y:.32,z:.14},yaw:.95,pitch:.06,dist:5.2},samples:[0]},
+ {labelIndex:null,title:'8. Partícula cercana al diámetro crítico',text:'La partícula amarilla está en la zona límite. Según su posición inicial y el tiempo de residencia, puede quedar retenida o escapar.',extra:'Es el caso más sensible: pequeños cambios en el caudal o en el tamaño pueden cambiar su destino.',view:{target:{x:0.0,y:.62,z:.12},yaw:.88,pitch:.06,dist:5.2},samples:[1]},
+ {labelIndex:null,title:'9. Partícula mayor que d crítico',text:'La partícula turquesa es más grande que el diámetro crítico. Tiene más probabilidad de llegar a la pared y contribuir al sedimento.',extra:'Cuanto mayor sea el diámetro, mayor será la velocidad de migración radial en el modelo de Stokes.',view:{target:{x:1.0,y:1.02,z:.10},yaw:.88,pitch:.08,dist:5.2},samples:[2]},
+ {labelIndex:[],title:'Recorrido finalizado',text:'Esto es todo, ahora eres libre de jugar con la simulación.',extra:'Podés cambiar el diámetro de los cristales, los modos de operación y las vistas para experimentar por tu cuenta.',view:{target:{x:0,y:-0.2,z:0},yaw:.53,pitch:.28,dist:24.2}}
+];
+function showGuideSamples(which){
+ for(const s of guideSamples){setGuideSampleVisible(s,false);resetGuideSampleTrail(s);}
+ if(!which)return;
+ const ids=which==='all'?[0,1,2]:which;
+ for(const i of ids){if(guideSamples[i]){setGuideSampleVisible(guideSamples[i],true);}}
+}
+
+function resetGuideSampleTrail(sample){
+ sample.history.length=0;
+ for(let i=0;i<sample.positions.length;i++)sample.positions[i]=0;
+ sample.trail.geometry.attributes.position.needsUpdate=true;
+}
+function setGuideSampleVisible(sample,visible){sample.halo.visible=visible;sample.core.visible=visible;sample.trail.visible=visible;}
+function sampleMotion(index,s){
+ if(index===0){
+   const x=-1.55+3.9*s;
+   const r=0.24+0.16*s;
+   return {x,y:r,z:0.16};
+ }
+ if(index===1){
+   const x=-1.25+3.0*s;
+   const r=Math.min(1.24,0.40+0.92*s);
+   return {x,y:r,z:0.12};
+ }
+ const x=s<0.72?(-1.1+1.85*(s/0.72)):(0.75+0.75*((s-0.72)/0.28));
+ const r=s<0.72?(0.62+0.76*(s/0.72)):1.38;
+ return {x,y:r,z:0.10};
+}
+function animateGuideSamples(dt){
+ if(!guideActive)return;
+ const step=GUIDE_STEPS[guideStep]; if(!step)return;
+ guideDemoTime+=dt;
+ if(!(guideStep>=5&&guideStep<=8)){
+   for(const s of guideSamples){ if(s.trail.visible){ resetGuideSampleTrail(s); s.trail.visible=false; } }
+   return;
+ }
+ const ids=step.samples==='all'?[0,1,2]:(step.samples||[]);
+ const localLoop=2.8;
+ for(let i=0;i<guideSamples.length;i++){
+   const sample=guideSamples[i];
+   const active=ids.includes(i);
+   setGuideSampleVisible(sample,active);
+   if(!active){ resetGuideSampleTrail(sample); continue; }
+   const phase=(guideDemoTime/localLoop + (guideStep===5?i*0.18:0))%1;
+   if(phase<guideLastPhases[i])resetGuideSampleTrail(sample);
+   guideLastPhases[i]=phase;
+   const p=sampleMotion(i,phase);
+   sample.core.position.set(p.x,p.y,p.z);
+   sample.halo.position.copy(sample.core.position);
+   const pulse=0.12+0.09*(1+Math.sin((guideDemoTime*3.4)+(i*1.2)))/2;
+   sample.halo.scale.setScalar(1+pulse);
+   sample.history.push([p.x,p.y,p.z]);
+   if(sample.history.length>48)sample.history.shift();
+   const hist=sample.history;
+   for(let k=0;k<48;k++){
+     const src=hist[Math.max(0,hist.length-1-k)] || hist[0] || [p.x,p.y,p.z];
+     const idx=(47-k)*3;
+     sample.positions[idx]=src[0]; sample.positions[idx+1]=src[1]; sample.positions[idx+2]=src[2];
+   }
+   sample.trail.geometry.attributes.position.needsUpdate=true;
+ }
+ // En los pasos 7–9, el centro de la cámara acompaña al cristal y deja margen
+ // para visualizar el avance y parte del recorrido sin perderlo de vista.
+ if(guideStep>=6&&guideStep<=8){
+   const selected=guideSamples[guideStep-6];
+   if(selected){
+     const p=selected.core.position;
+     const wanted=new THREE.Vector3(p.x+0.24,p.y-0.07,p.z);
+     const blend=1-Math.exp(-Math.min(Math.max(dt,0),.08)*8.0);
+     orbitTarget.x+=(wanted.x-orbitTarget.x)*blend;
+     orbitTarget.y+=(wanted.y-orbitTarget.y)*blend;
+     orbitTarget.z+=(wanted.z-orbitTarget.z)*blend;
+     cam();
+   }
+ }
+}
+// Narración local mediante las voces instaladas en el navegador/sistema.
+// No requiere subir información ni generar archivos de audio.
+let guideVoiceEnabled=true,guideVoiceSupported=('speechSynthesis' in window)&&('SpeechSynthesisUtterance' in window),guideUtterance=null;
+let guideAvailableVoices=[];const guideVoiceRate=0.95;
+function guideVoiceLabel(message){const el=$('guideVoiceStatus');if(el)el.textContent=message;}
+function cancelGuideVoice(){if(guideVoiceSupported)window.speechSynthesis.cancel();guideUtterance=null;}
+function guideVoiceScore(v){
+ const name=(v.name||'').toLowerCase(),lang=(v.lang||'').toLowerCase();
+ let score=lang.startsWith('es')?90:-100;
+ if(/natural|neural|premium|enhanced|online/.test(name))score+=50;
+ if(/microsoft|google|apple|siri/.test(name))score+=12;
+ if(/es[-_]ar/.test(lang))score+=8;
+ if(/es[-_]es/.test(lang))score+=3;
+ return score;
+}
+function guideVoiceId(v){return [v.voiceURI,v.name,v.lang].join('||');}
+function preferredGuideVoice(){
+ if(!guideVoiceSupported)return null;
+ return guideAvailableVoices[0]||null;
+}
+function loadGuideVoices(){
+ if(!guideVoiceSupported)return;
+ const all=window.speechSynthesis.getVoices();
+ const spanish=all.filter(v=>/^es([-_]|$)/i.test(v.lang));
+ guideAvailableVoices=spanish.sort((a,b)=>guideVoiceScore(b)-guideVoiceScore(a));
+ if(!guideAvailableVoices.length)guideVoiceLabel('No se detectaron voces españolas. Se usará la voz predeterminada.');
+}
+// Texto preparado para la lectura oral de términos técnicos y símbolos.
+function guideSpokenText(s){return s.replace(/Li₂CO₃/g,'carbonato de litio').replace(/d crítico/g,'diámetro crítico').replace(/dcrit/g,'diámetro crítico').replace(/TP10/g,'trabajo práctico diez').replace(/Σ/g,'sigma').replace(/µm/g,'micrómetros').replace(/0,10 m³\/s/g,'cero coma diez metros cúbicos por segundo');}
+function sayGuideStep(){
+ cancelGuideVoice();
+ if(!guideActive||!guideVoiceEnabled)return;
+ if(!guideVoiceSupported)return;
+ const step=GUIDE_STEPS[guideStep];if(!step)return;
+ const critical=guideStep===5?(' El diámetro crítico de referencia configurado es '+f(params().dcrit,3)+' micrómetros.') : '';
+ // El texto visible se conserva. La versión oral reemplaza notación técnica por palabras fáciles de pronunciar.
+ const words=guideSpokenText(step.title.replace(/^\d+\. /,'')+'. '+step.text+' '+step.extra+critical);
+ const utterance=new SpeechSynthesisUtterance(words);
+ const voice=preferredGuideVoice();if(voice){utterance.voice=voice;utterance.lang=voice.lang;}else utterance.lang='es-AR';
+ utterance.rate=guideVoiceRate;utterance.pitch=1;utterance.volume=1;
+ guideUtterance=utterance;
+ utterance.onstart=()=>{if(guideUtterance===utterance)guideVoiceLabel('🔊 Reproduciendo narración');};
+ utterance.onend=()=>{if(guideUtterance===utterance){guideUtterance=null;guideVoiceLabel('Explicación terminada');if(guideActive&&guideStep===GUIDE_STEPS.length-1){setTimeout(()=>{if(guideActive&&guideStep===GUIDE_STEPS.length-1)startControlsTour();},900);}}};
+ utterance.onerror=e=>{if(guideUtterance===utterance){guideUtterance=null;guideVoiceLabel(e.error==='canceled'?'Narración detenida':'No se pudo reproducir la voz');}};
+ window.speechSynthesis.speak(utterance);
+}
+function toggleGuideVoice(){
+ guideVoiceEnabled=!guideVoiceEnabled;
+ $('guideVoiceToggle').textContent=guideVoiceEnabled?'🔊 Voz activada':'🔇 Voz silenciada';
+ $('guideVoiceToggle').setAttribute('aria-pressed',String(guideVoiceEnabled));
+ if(guideVoiceEnabled)sayGuideStep();else{cancelGuideVoice();guideVoiceLabel('Voz silenciada');}
+}
+function initGuideVoice(){
+ if(!guideVoiceSupported)guideVoiceLabel('La narración no está disponible en este navegador.');
+ if(guideVoiceSupported)loadGuideVoices();
+ // Firefox y Windows a veces entregan las voces de manera diferida.
+ if(guideVoiceSupported)window.speechSynthesis.addEventListener?.('voiceschanged',loadGuideVoices);
+ $('guideVoiceToggle').onclick=toggleGuideVoice;
+ $('guideVoiceReplay').onclick=()=>{if(!guideVoiceEnabled){guideVoiceEnabled=true;$('guideVoiceToggle').textContent='🔊 Voz activada';$('guideVoiceToggle').setAttribute('aria-pressed','true');}sayGuideStep();};
+}
+initGuideVoice();
+function applyGuideStep(){
+ const step=GUIDE_STEPS[guideStep]; if(!step)return;
+ document.querySelector('aside.controls')?.classList.add('guided-session');
+ $('guidePanel').classList.add('visible');
+ $('guideStepIndex').textContent=guideStep===GUIDE_STEPS.length-1?'¡Terminamos!':'Paso '+(guideStep+1)+'/'+(GUIDE_STEPS.length-1);
+ $('guideTitle').textContent=step.title;
+ let extra=step.extra||'';
+ if(guideStep===5){extra+=' Diámetro crítico de referencia: '+f(params().dcrit,3)+' µm.';}
+ $('guideText').textContent=step.text;
+ $('guideExtra').textContent=extra;
+ $('guidePrev').disabled=guideStep===0;
+ $('guideNext').textContent=guideStep===GUIDE_STEPS.length-1?'Explorar simulación →':'Siguiente →';
+ currentGuideLabelIndexes=step.labelIndex===undefined?null:step.labelIndex;
+ guideDemoTime=0;guideLastPhases=[0,0,0];
+ showGuideSamples(step.samples||null);
+ if(step.view){orbitTarget={...step.view.target};orbit.yaw=step.view.yaw;orbit.pitch=step.view.pitch;orbit.dist=step.view.dist;cam();updateLabels();}
+ $('guideToggle').classList.add('active');
+ sayGuideStep();
+}
+// Bloqueo reversible: no altera los valores elegidos ni la configuración previa de controles.
+const guidedDisabledStates=new Map();
+function setGuidedInterfaceLock(locked){
+ const selector='#actionDock button, #actionDock input, #actionDock select, #viewerActions button, #viewerActions input, #viewerViewSwitches button, #physicsToggle, aside.controls button, aside.controls input, aside.controls select';
+ if(locked){
+   document.body.classList.add('guide-locked');
+   for(const control of document.querySelectorAll(selector)){
+     if(control.closest('#guidePanel')||control.id==='guideToggle')continue;
+     if(!guidedDisabledStates.has(control))guidedDisabledStates.set(control,control.disabled);
+     control.disabled=true;
+   }
+ }else{
+   document.body.classList.remove('guide-locked');
+   for(const [control,wasDisabled] of guidedDisabledStates){
+     if(control.isConnected)control.disabled=wasDisabled;
+   }
+   guidedDisabledStates.clear();
+   // Si el modo de suspensión o el de exploración restringen un control, respetarlo.
+   if($('dpSlider'))$('dpSlider').disabled=sizeMode==='poly';
+ }
+}
+function stopGuide(){if($('navigationHint'))$('navigationHint').hidden=false;cancelGuideVoice();guideActive=false;setGuidedInterfaceLock(false);currentGuideLabelIndexes=null;guideDemoTime=0;showGuideSamples(null);$('guidePanel').classList.remove('visible');document.querySelector('aside.controls')?.classList.remove('guided-session');$('guideToggle').classList.remove('active');if(guideSavedView){orbit={...guideSavedView.orbit};orbitTarget={...guideSavedView.target};cam();}updateLabels();}
+function startGuide(){if($('navigationHint'))$('navigationHint').hidden=true;if(controlsTourActive)stopControlsTour();guideSavedView={orbit:{...orbit},target:{...orbitTarget}};guideSavedRunning=running;running=false;$('play').textContent='▶ Iniciar';guideActive=true;guideStep=0;setGuidedInterfaceLock(true);applyGuideStep();}
+function nextGuide(){if(guideStep<GUIDE_STEPS.length-1){guideStep++;applyGuideStep();}else startControlsTour();}
+function prevGuide(){if(guideStep>0){guideStep--;applyGuideStep();}}
+
+// El segundo recorrido comienza DESPUÉS de la despedida; resalta un control real cada vez.
+const CONTROL_TOUR=[
+ {id:'play',title:'Iniciar y pausar',text:'Este botón pone a funcionar la animación de la centrífuga. Al iniciarla, las partículas avanzan y algunas llegan al sedimento. Si lo pulsás nuevamente, la simulación queda pausada.'},
+ {id:'reset',title:'Reiniciar',text:'Este botón vuelve a comenzar la simulación desde el inicio. Se reinician el tiempo y las partículas mostradas.'},
+ {id:'playbackSpeed',title:'Velocidad de reproducción',text:'Este deslizador cambia qué tan rápido transcurre la animación. En cámara lenta podés observar con más detalle el movimiento de los cristales; no cambia los parámetros físicos del cálculo.'},
+ {id:'pov',title:'Vista desde un cristal',text:'Activa una cámara que acompaña a un cristal como si viajáramos con él dentro del rotor. Así se distingue su recorrido hacia la pared o hacia la salida.'},
+ {id:'nextp',title:'Cambiar cristal',text:'Cuando estás en la vista de seguimiento, este botón elige otro cristal. Permite comparar partículas que empiezan en distintos lugares.'},
+ {id:'micro',title:'Vista microscópica',text:'Abre una ventana con las trayectorias ampliadas. Es un esquema para estudiar cómo se desplazan los cristales, no una vista óptica real.'},
+ {id:'trans',title:'Corte transversal y gráfica',text:'Muestra el corte circular del rotor y una gráfica de la posición radial respecto del tiempo. Te ayuda a ver la migración hacia la pared.'},
+ {id:'trailsToggle',title:'Mostrar u ocultar trayectorias',text:'Activa o desactiva las líneas que dejan las partículas durante su movimiento. Si las ocultás, podés observar el equipo con menos elementos visuales.'},
+ {id:'labelsToggle',title:'Etiquetas de componentes',text:'Muestra u oculta los nombres del tanque, los ductos, el rotor y otros componentes. Fuera de la guía podés ver todas las etiquetas juntas.'},
+ {id:'physicsToggle',title:'Datos físicos',text:'Abre el panel de datos físicos: caudal, velocidad de giro, tiempo de residencia, factor sigma y diámetro crítico. Son valores obtenidos del modelo ideal.'},
+ {id:'mode-exp',title:'Ensayo experimental',text:'Activa el escenario del trabajo práctico con un caudal de cero coma diez metros cúbicos por segundo. El diámetro crítico se calcula para esas condiciones.'},
+ {id:'mode-free',title:'Modo explorar',text:'Permite modificar la producción para observar cómo cambian el caudal, el tiempo de residencia y el diámetro crítico.'},
+ {id:'monoMode',title:'Suspensión monodispersa',text:'Todas las partículas de la simulación tienen el mismo diámetro, elegido con el deslizador de tamaño.'},
+ {id:'polyMode',title:'Suspensión polidispersa',text:'La mezcla contiene partículas de diferentes diámetros. Podés fijar un mínimo y un máximo, y comparar sus comportamientos mediante los colores.'},
+ {id:'dpSlider',title:'Diámetro de partícula',text:'Este deslizador cambia el diámetro de los cristales cuando la suspensión es monodispersa. El centro marca el diámetro crítico. A un lado hay cristales menores y al otro mayores.'},
+ {id:'qmSlider',title:'Producción en modo explorar',text:'En el modo explorar, este deslizador ajusta la producción. Al cambiar el caudal, se modifica el tiempo disponible para sedimentar y, por lo tanto, el diámetro crítico.',prepare:'explore'},
+ {id:'waterOpacity',title:'Transparencia del líquido',text:'Ajusta la transparencia del agua dentro del rotor. Podés volverla más transparente para observar las partículas, o más opaca para visualizar el volumen de líquido.'},
+ {id:'guideToggle',title:'Volver al recorrido guiado',text:'Este botón vuelve a iniciar la explicación del equipo desde el tanque de alimentación. Podés repetirla cuando quieras.'}
+];
+function clearCoachAdvance(){if(coachAdvanceId!==null){clearTimeout(coachAdvanceId);coachAdvanceId=null;}}
+function clearCoachSpotlight(){document.querySelectorAll('.coach-spotlight').forEach(el=>el.classList.remove('coach-spotlight'));}
+function stopControlsVoice(){clearCoachAdvance();if(guideVoiceSupported)window.speechSynthesis.cancel();controlsTourUtterance=null;}
+function stopControlsTour(){stopControlsVoice();controlsTourActive=false;clearCoachSpotlight();$('controlsCoach').classList.remove('open');}
+function controlsTourSpeak(){
+ stopControlsVoice();if(!controlsTourActive||!guideVoiceEnabled||!guideVoiceSupported)return;
+ const data=CONTROL_TOUR[controlsTourStep];const utterance=new SpeechSynthesisUtterance(guideSpokenText(data.title+'. '+data.text));
+ const voice=preferredGuideVoice();if(voice){utterance.voice=voice;utterance.lang=voice.lang;}else utterance.lang='es-AR';
+ utterance.rate=guideVoiceRate;utterance.volume=1;utterance.pitch=1;controlsTourUtterance=utterance;
+ utterance.onend=()=>{if(controlsTourActive&&controlsTourUtterance===utterance){controlsTourUtterance=null;coachAdvanceId=setTimeout(()=>{coachAdvanceId=null;if(controlsTourActive)nextControlsTour();},1200);}};
+ utterance.onerror=()=>{if(controlsTourUtterance===utterance)controlsTourUtterance=null;};
+ window.speechSynthesis.speak(utterance);
+}
+function applyControlsTour(){
+ if(!controlsTourActive)return;
+ clearCoachSpotlight();const data=CONTROL_TOUR[controlsTourStep];
+ $('coachCount').textContent='CONTROLES · '+(controlsTourStep+1)+' / '+CONTROL_TOUR.length;
+ $('coachTitle').textContent=data.title;$('coachDescription').textContent=data.text;
+ $('coachBack').disabled=controlsTourStep===0;
+ $('coachNext').textContent=controlsTourStep===CONTROL_TOUR.length-1?'Terminar →':'Siguiente →';
+ let target=$(data.id);
+ // Sin cambiar valores ni iniciar operaciones, volvemos visible el control destacado.
+ // El control de producción solamente se muestra cuando el usuario elige Explorar.
+ if(data.id==='qmSlider'){
+   const group=$('productionExploration');if(group){group.hidden=false;group.style.display='';}
+ }else if(controlsTourStep!==15){
+   const group=$('productionExploration');if(group&&operatingMode!=='free'){group.hidden=true;group.style.display='none';}
+ }
+ if(target){target.classList.add('coach-spotlight');if(target.closest('#actionDock')){target.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});}else if(target.closest('#viewerActions')||target.closest('#viewerViewSwitches')){ /* visor siempre accesible */ }else{target.scrollIntoView({behavior:'smooth',block:'nearest',inline:'nearest'});}}
+ controlsTourSpeak();
+}
+function startControlsTour(){
+ if(controlsTourActive)return;
+ // Salimos de la explicación del equipo, pero retomamos la narración con los controles.
+ const wasSpeaking=guideVoiceEnabled;
+ if(guideActive)stopGuide();
+ guideVoiceEnabled=wasSpeaking;
+ controlsTourActive=true;controlsTourStep=0;
+ $('controlsCoach').classList.add('open');
+ applyControlsTour();
+}
+function nextControlsTour(){if(controlsTourStep<CONTROL_TOUR.length-1){controlsTourStep++;applyControlsTour();}else stopControlsTour();}
+function previousControlsTour(){if(controlsTourStep>0){controlsTourStep--;applyControlsTour();}}
+$('coachExit').onclick=stopControlsTour;
+$('coachNext').onclick=nextControlsTour;
+$('coachBack').onclick=previousControlsTour;
+$('coachReplay').onclick=()=>{if(!guideVoiceEnabled){guideVoiceEnabled=true;}controlsTourSpeak();};
+
+function updateVisualButtons(){
+ $('trailsToggle').textContent=showTrails?'〰 Ocultar trayectorias':'〰 Mostrar trayectorias';
+ $('trailsToggle').classList.toggle('active',showTrails);
+ $('sedToggle').textContent=showSediment?'◉ Ocultar sedimento':'◉ Mostrar sedimento';
+ $('sedToggle').classList.toggle('active',showSediment);
+ $('labelsToggle').textContent=showLabels?'🏷 Ocultar etiquetas':'🏷 Mostrar etiquetas';
+ $('labelsToggle').classList.toggle('active',showLabels);
+ $('waterOpacityLabel').textContent=Math.round(liquidOpacity*100)+' %';
+ if(water)water.material.opacity=liquidOpacity;
+ if(labelGroup)labelGroup.visible=false;
+ const overlay=$('labelsOverlay'),leaders=$('labelLeaders');
+ if(overlay)overlay.style.visibility=showLabels?'visible':'hidden';
+ if(leaders)leaders.style.visibility=showLabels?'visible':'hidden';
+ updateLabels();
+}
+function setPresent(v){presentationMode=v;document.body.classList.toggle('presenting',v);if(renderer)resize();}
+function updatePhysics(d){
+ const el=$('physicsNumbers');if(!el)return;
+ const items=[['d crítico',f(d.dcrit,3)+' µm'],['Caudal',f(d.Q,6)+' m³/s'],['Factor Σ',f(d.sigma,2)+' m²'],['Giro',f(d.rpm,0)+' rpm'],['Residencia',f(d.t,3)+' s'],['Velocidad axial media',f(d.vax,3)+' m/s'],['Sólidos retenidos (visuales)',String(totalCaptured)],['Escapes (visuales)',String(totalEscaped)]];
+ el.innerHTML=items.map(([a,b])=>'<div>'+a+'<b>'+b+'</b></div>').join('');
+}
+function updateComparison(d){
+ const panel=$('comparePanel');if(!panel||panel.hidden){for(const guide of comparisonGuides){guide.line.visible=false;guide.marker.visible=false;}return;}
+ const read=$('compareReadout'),cv=$('compareChart'),ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+ const get=(id)=>Math.max(.1,Math.min(10,Number($(id).value)||.1));
+ const ds=[get('cmpA'),get('cmpB')];const startFraction=(Number($('cmpRad').value)||30)/100;
+ const ri=d.r0+(d.R-d.r0)*startFraction;const colors=['#c18cff','#54e2ce'];
+ ctx.clearRect(0,0,W,H);ctx.fillStyle='#071825';ctx.fillRect(0,0,W,H);
+ const L=49,R=W-18,T=18,B=H-33;ctx.strokeStyle='#34556a';ctx.lineWidth=1;
+ for(let i=0;i<5;i++){let y=T+(B-T)*i/4;ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(R,y);ctx.stroke();}
+ ctx.font='12px sans-serif';ctx.fillStyle='#bad5e3';ctx.fillText('R (pared)',4,T+10);ctx.fillText('r₀',24,B);ctx.fillText('t residencia →',R-100,H-9);
+ const msgs=[];
+ ds.forEach((mic,i)=>{const k=(rhoP-rho)*(mic*1e-6)**2*d.omega**2/(18*mu),tw=k>0?Math.log(d.R/ri)/k:Infinity;
+ const guide=comparisonGuides[i];if(guide){guide.line.visible=true;guide.marker.visible=true;
+  const theta=.8;for(let j=0;j<100;j++){const tt=d.t*j/99,rad=Math.min(d.R,ri*Math.exp(Math.min(20,k*tt))),rv=.2+1.18*(rad-d.r0)/(d.R-d.r0);guide.arr[j*3]=-2.3+4.6*j/99;guide.arr[j*3+1]=rv*Math.cos(theta);guide.arr[j*3+2]=rv*Math.sin(theta);}
+  guide.line.geometry.attributes.position.needsUpdate=true;guide.line.geometry.computeBoundingSphere();
+  const tt=Math.min(d.t,Math.max(0,sim%(d.t*1.25))),rmark=Math.min(d.R,ri*Math.exp(Math.min(20,k*tt))),rvMark=.2+1.18*(rmark-d.r0)/(d.R-d.r0);
+  guide.marker.position.set(-2.3+4.6*tt/d.t,rvMark*Math.cos(theta),rvMark*Math.sin(theta));
+  if(tw<=tt){guide.marker.position.set(-2.3+4.6*tw/d.t,1.38*Math.cos(theta),1.38*Math.sin(theta));}
+ }
+ ctx.strokeStyle=colors[i];ctx.lineWidth=3;ctx.beginPath();
+ for(let j=0;j<=150;j++){const t=d.t*j/150,rad=Math.min(d.R,ri*Math.exp(Math.min(20,k*t))),x=L+(R-L)*j/150,y=B-(B-T)*(rad-d.r0)/(d.R-d.r0);if(!j)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.stroke();
+ if(tw<=d.t){const x=L+(R-L)*tw/d.t;ctx.fillStyle=colors[i];ctx.beginPath();ctx.arc(x,T,5,0,Math.PI*2);ctx.fill();}
+ msgs.push('<span style="color:'+colors[i]+'">● Cristal '+(i?'B':'A')+' ('+f(mic,2)+' µm)</span>: '+(tw<=d.t?'alcanza la pared a los '+f(tw,3)+' s':'no alcanza la pared; t pared = '+f(tw,3)+' s') );
+ });
+ read.innerHTML='Radio inicial compartido: '+f(ri,4)+' m · t residencia = '+f(d.t,3)+' s<br>'+msgs.join('<br>');
+}
+function draw(dt){
+ moveWalk(dt);
+ let d=updateUI();if(running){sim+=dt*playbackFactor*Math.max(.15,d.t/9);rotor.rotation.x+=dt*playbackFactor*Math.min(d.omega/45,9);}
+ if(running){for(let p of particles){let age=sim-p.birth-p.delay*d.t*1.3;if(age<0||p.completed)continue;let rstart=d.r0+(d.R-d.r0)*p.initial,twall=particleK(p,d)>0?Math.log(d.R/rstart)/particleK(p,d):Infinity,retained=twall<=d.t,finishAt=retained?twall+Math.max(1,d.t*.45):d.t+Math.max(1.15,d.t*.75);if(age>=finishAt){p.completed=true;if(retained){totalCaptured++;const grain=sedimentParticles[depositionIndex%sedimentParticles.length];depositionIndex++;const longitudinal=-2.3+4.6*twall/d.t;const angular=p.phase+(p.birth+p.delay*d.t*1.3+twall)*Math.min(d.omega/45,9);const rad=1.385-(Math.min(depositionIndex,700)/700)*.085;grain.position.set(longitudinal,rad*Math.cos(angular),rad*Math.sin(angular));grain.visible=true;}else totalEscaped++;if(feedOn){p.birth=sim;p.delay=.02;p.completed=false;p.initial=.02+Math.random()*.96;p.phase=Math.random()*Math.PI*2;renewParticle(p);}else{p.mesh.visible=false;p.trail.visible=false;}}}}
+ let caught=0,escaped=0;
+ for(let p of particles){if(p.completed)continue;let result=place(p,d,sim);if(result==='caught')caught++;if(result==='escaped')escaped++;}
+ $('caught').textContent=totalCaptured+' (+ '+caught+' visibles)';$('escaped').textContent=totalEscaped+' (+ '+escaped+' visibles)';$('capture-live').textContent=totalCaptured+' (+ '+caught+')';$('escape-live').textContent=totalEscaped+' (+ '+escaped+')';let pending=particles.length-caught-escaped;$('live-interpret').textContent='Acumulado: '+totalCaptured+' cristales retenidos y '+totalEscaped+' escapados. El color representa la categoría de tamaño; la ubicación revela si se retienen en pared o escapan por la salida.';
+ // Depósito visual persistente, con capacidad de visualización limitada.
+ for(let i=0;i<collectorParticles.length;i++){let m=collectorParticles[i];m.visible=i<Math.min(totalEscaped,collectorParticles.length);if(m.visible){let a=i*2.399963,rad=.10+.46*Math.sqrt((i+.5)/collectorParticles.length);m.position.set(receiverX+rad*Math.cos(a),-1.75+.016*Math.floor(i/22),rad*Math.sin(a));}}
+ let seen=totalCaptured+totalEscaped;$('visualYield').textContent=seen?f(totalCaptured*100/seen,1)+' %':'—';
+ // Visualización progresiva de depósito retenido; la capacidad es una escala didáctica.
+ sedimentVisual=Math.min(.95,totalCaptured/500);
+ if(sedimentLayer)sedimentLayer.material.opacity=0; // La acumulación se representa con cristales en posiciones longitudinales distintas.
+ updatePhysics(d);updateComparison(d);streams(d);animateCollectorFlow();updateVisualFlow(d);updateLab(d);povCamera(d);drawMicro(d);drawTransverse(d);animateGuideSamples(dt);updateLabels();renderer.render(scene,camera);
+}
+function reset(){if(pov)setPOV(false);running=false;sim=0;totalCaptured=0;totalEscaped=0;sedimentVisual=0;depositionIndex=0;for(const grain of sedimentParticles)grain.visible=false;orbitTarget={x:0,y:-0.2,z:0};for(let p of particles){p.birth=0;p.completed=false;renewParticle(p);}dischargeUntil=0;rotor.rotation.x=0;cam();updateVisualFlow(params());$('play').textContent='▶ Iniciar';$('status').textContent='● En pausa';draw(0);}function loop(now){let dt=last?Math.min((now-last)/1000,.04):0;last=now;draw(dt);raf=requestAnimationFrame(loop);}
+
+const labText={components:`<b>Componentes funcionales:</b> tambor tubular giratorio (sedimentación); zona anular de líquido (entre r₀ y R); eje y accionamiento (rotación); alimentación (suspensión); salida de líquido clarificado; sólidos retenidos en pared. <br><br><span class="labpill">Tambor: ω, R</span><span class="labpill">Zona anular: r₀, R, b</span><span class="labpill">Alimentación: Qᵥ</span><br><br>Hacé clic sobre un cristal amarillo en el modelo 3D o usá «Seleccionar partícula testigo» para examinar su trayectoria. Las conexiones externas son ilustrativas. los cristales arrastrados recorren la tubería transparente y se acumulan en el recipiente colector de la derecha. Los verdes permanecen en la pared hasta activar la descarga por lote con el equipo parado.`,stages:`<b>Etapa 1 de 5:</b> Alimentación de la suspensión. El líquido ocupa idealmente una sección anular π(R²−r₀²).<br><br><button id="lp-nextstage">Siguiente etapa →</button>`,particle:`<b>Seguimiento individual:</b> seleccioná un cristal amarillo del modelo 3D o presioná el botón «Seleccionar partícula testigo». Verás su posición radial, axial, tiempo hasta la pared y el criterio de captura. En modo monodisperso comparten diámetro; en modo polidisperso cada una tiene su propio dₚ.`,charts:`<b>Interpretación del gráfico:</b> la posición radial crece exponencialmente mientras la partícula se desplaza axialmente. Si alcanza R antes de tᵣₑₛ, queda capturada. Si llega a la salida primero, escapa. Observá cómo cambia la curva según la posición inicial.`,check:`<b>Hipótesis de la GE12:</b> partícula esférica, régimen de Stokes, inercia despreciable, velocidad tangencial adquirida instantáneamente, flujo axial medio uniforme, ausencia de re-entrainment y sedimentación independiente. <br><br><b>Advertencia:</b> el 40 % m/m de sólidos del TP10 puede invalidar la aproximación de partículas aisladas. La comprobación de Reₚ es local y no valida por sí sola el comportamiento concentrado.`};
+const stages=[['Alimentación','Ingresa una suspensión de cristales de Li₂CO₃ en agua. El modelo supone una zona líquida anular entre r₀ y R.'],['Giro del tambor','La rotación impone un campo centrífugo de magnitud ω²r. Al duplicar rpm, se cuadruplica la aceleración a radio fijo.'],['Migración radial','La diferencia de densidades provoca la sedimentación hacia la pared: dr/dt = [(ρₚ−ρ)dₚ²ω²/(18μ)]·r.'],['Transporte axial','La partícula avanza con el líquido a velocidad media Qᵥ/[π(R²−r₀²)]. Compiten el tiempo de migración y el de residencia.'],['Clasificación ideal','Si toca R antes de salir: capturada. Si alcanza z=b primero: escapa. Los sólidos se acumulan en la pared; con el equipo detenido podés activar una descarga por lote ilustrativa.']];
+function tabSelect(tab){labTab=tab;for(let name of ['components','stages','particle','charts','check'])$('lp-'+name).classList.toggle('active',name===tab);if(tab==='stages')labStage=0;tabRender();}
+function tabRender(){if(labTab==='stages'){$('lp-content').innerHTML='<b>Etapa '+(labStage+1)+' / 5 · '+stages[labStage][0]+'</b><br>'+stages[labStage][1]+'<br><br><button id="lp-nextstage">'+(labStage===4?'Volver a empezar':'Siguiente etapa →')+'</button>';$('lp-nextstage').onclick=()=>{labStage=(labStage+1)%5;tabRender();};}else $('lp-content').innerHTML=labText[labTab];}
+function selectParticle(index){selectedParticle=Math.max(0,Math.min(N-1,index));transIndex=selectedParticle;tabSelect('particle');$('lp-status-text')?.remove();}
+function updateLab(d){let p=selectedParticle===null?null:particles[selectedParticle],el=$('lp-live');if(p){let start=d.r0+(d.R-d.r0)*p.initial,age=Math.max(0,sim-p.birth-p.delay*d.t*1.3),tt=Math.min(age,d.t),twall=particleK(p,d)>0?Math.log(d.R/start)/particleK(p,d):Infinity,rad=Math.min(d.R,start*Math.exp(Math.min((p?particleK(p,d):d.k)*tt,20))),z=Math.min(1,tt/d.t)*d.L,vr=particleK(p,d)*rad,rep=rad===d.R&&twall<=d.t?'RETENIDA EN PARED':age>=d.t?'ESCAPA CON EL LÍQUIDO':'EN TRÁNSITO';el.innerHTML='<b>Partícula #'+(selectedParticle+1)+'</b> · '+rep+'<br>r = <b>'+f(rad,4)+' m</b> · z = <b>'+f(z,3)+' m</b><br>Velocidad radial = <b>'+f(vr,5)+' m/s</b><br>Tiempo transcurrido = <b>'+f(tt,3)+' s</b><br>Tiempo para alcanzar R = <b>'+(Number.isFinite(twall)?f(twall,3)+' s':'∞')+'</b><br>Tiempo de residencia = <b>'+f(d.t,3)+' s</b>';}else el.textContent='Elegí una partícula para observar su trayectoria.';plotLab(d,p);}
+function plotLab(d,p){let canvas=$('lp-plot'),ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);ctx.fillStyle='#091522';ctx.fillRect(0,0,w,h);let pad=45,ww=w-pad-18,hh=h-pad-20;ctx.strokeStyle='#36536a';ctx.lineWidth=1;for(let j=0;j<=4;j++){let yy=12+j*hh/4;ctx.beginPath();ctx.moveTo(pad,yy);ctx.lineTo(pad+ww,yy);ctx.stroke();}ctx.fillStyle='#a9c7da';ctx.font='15px sans-serif';ctx.fillText('R = '+f(d.R,2)+' m',pad+5,20);ctx.fillText('r₀ = '+f(d.r0,2)+' m',pad+5,12+hh+19);ctx.fillText('t = '+f(d.t,2)+' s',pad+ww-110,h-8);let rstart=p?d.r0+(d.R-d.r0)*p.initial:d.r0;ctx.strokeStyle='#facc15';ctx.lineWidth=3;ctx.beginPath();for(let j=0;j<=140;j++){let t=d.t*j/140,r=Math.min(d.R,rstart*Math.exp(Math.min((p?particleK(p,d):d.k)*t,30))),x=pad+ww*j/140,y=12+hh*(1-(r-d.r0)/(d.R-d.r0));if(j===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.stroke();if(p){let t=Math.min(Math.max(0,sim-p.birth-p.delay*d.t*1.3),d.t),r=Math.min(d.R,rstart*Math.exp(Math.min((p?particleK(p,d):d.k)*t,30)));ctx.beginPath();ctx.arc(pad+ww*t/d.t,12+hh*(1-(r-d.r0)/(d.R-d.r0)),7,0,Math.PI*2);ctx.fillStyle='#6df4c1';ctx.fill();}}
+for(let name of ['components','stages','particle','charts','check'])$('lp-'+name).onclick=()=>tabSelect(name);$('lp-follow').onclick=()=>selectParticle(0);$('lp-clear').onclick=()=>{selectedParticle=null;tabSelect('components');};tabRender();
+
+let microOn=false;function drawMicro(d){if(!microOn)return;let cv=$('microCanvas'),ctx=cv.getContext('2d'),w=cv.width,h=cv.height;ctx.clearRect(0,0,w,h);ctx.fillStyle='#091f30';ctx.fillRect(0,0,w,h);let left=62,right=w-25,top=38,bottom=h-50;ctx.fillStyle='#17455b';ctx.fillRect(left,top,right-left,bottom-top);ctx.fillStyle='#b3c9d6';ctx.fillRect(left,bottom-7,right-left,7);ctx.strokeStyle='#80c9e8';ctx.setLineDash([7,6]);ctx.beginPath();ctx.moveTo(left,top);ctx.lineTo(right,top);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#d7efff';ctx.font='19px sans-serif';ctx.fillText('Superficie libre r₀',left+8,top+25);ctx.fillText('Pared del tambor R',left+8,bottom-17);ctx.fillText('Alimentación →',left, h-13);ctx.fillText('→ Salida',right-115,h-13);let visible=0,capt=0,esc=0;for(let p of particles){if(!p.mesh.visible||p.completed)continue;let age=sim-p.birth-p.delay*d.t*1.3;if(age<0)continue;let ri=d.r0+(d.R-d.r0)*p.initial,twall=particleK(p,d)>0?Math.log(d.R/ri)/particleK(p,d):Infinity,isCaptured=twall<=d.t;let tt=Math.max(0,Math.min(age,d.t,twall)),rad=Math.min(d.R,ri*Math.exp(Math.min(20,particleK(p,d)*tt)));let x=left+(right-left)*Math.min(1,tt/d.t),y=top+(bottom-top)*(rad-d.r0)/(d.R-d.r0);if(age>=d.t&&!isCaptured){x=right-4;esc++;}else if(age>=twall&&isCaptured){y=bottom-10;capt++;}ctx.beginPath();ctx.arc(x,y,4.2,0,Math.PI*2);ctx.fillStyle=age>=twall&&isCaptured?'#37e2a0':age>=d.t&&!isCaptured?'#fb6f91':'#ffce53';ctx.fill();visible++;}$('microCaption').textContent='Cristales visibles: '+visible+' · Capturados en pared: '+capt+' · En salida: '+esc+'. Vista esquemática ampliada de posición axial (horizontal) y radial (vertical); no es una imagen óptica ni está a escala.';}let transIndex=0;
+function drawTransverse(d){
+ if(!transOn)return;
+ const c=$('transCanvas'),x=c.getContext('2d'),W=c.width,H=c.height,cx=W*.5,cy=H*.51,R=149,inner=R*d.r0/d.R;
+ x.clearRect(0,0,W,H);x.fillStyle='#091f30';x.fillRect(0,0,W,H);
+ x.beginPath();x.arc(cx,cy,R+9,0,Math.PI*2);x.strokeStyle='#b3c7d6';x.lineWidth=16;x.stroke();
+ x.beginPath();x.arc(cx,cy,R-4,0,Math.PI*2);x.strokeStyle='#37e2a0';x.lineWidth=3+sedimentVisual*35;x.globalAlpha=.28+sedimentVisual*.65;x.stroke();x.globalAlpha=1;
+ x.beginPath();x.arc(cx,cy,inner,0,Math.PI*2);x.fillStyle='#12364d';x.fill();x.strokeStyle='#6cb7d3';x.setLineDash([6,5]);x.lineWidth=2;x.stroke();x.setLineDash([]);
+ x.fillStyle='#b9dbe8';x.font='15px sans-serif';x.fillText('r₀',cx+inner+5,cy-8);x.fillText('R',cx+R+15,cy-8);
+ let count=0;
+ for(let i=0;i<particles.length;i++){
+  const p=particles[i];if(p.completed||!p.mesh.visible)continue;
+  const age=sim-p.birth-p.delay*d.t*1.3;if(age<0||age>d.t)continue;
+  const ri=d.r0+(d.R-d.r0)*p.initial,tw=particleK(p,d)>0?Math.log(d.R/ri)/particleK(p,d):Infinity;
+  const t=Math.min(age,tw,d.t),r=Math.min(d.R,ri*Math.exp(Math.min(particleK(p,d)*t,20)));
+  const a=p.phase+sim*Math.min(d.omega/45,9),rr=R*r/d.R,px=cx+rr*Math.cos(a),py=cy+rr*Math.sin(a),capt=tw<=d.t&&age>=tw;
+  x.beginPath();x.arc(px,py,i===transIndex?7:3.4,0,Math.PI*2);x.fillStyle=i===transIndex?'#ffffff':capt?'#37e2a0':'#ffce53';x.fill();
+  if(i===transIndex){let ux=Math.cos(a),uy=Math.sin(a),arrow=35;x.strokeStyle='#facc15';x.lineWidth=3;x.beginPath();x.moveTo(px,py);x.lineTo(px+ux*arrow,py+uy*arrow);x.stroke();x.beginPath();x.moveTo(px+ux*arrow,py+uy*arrow);x.lineTo(px+ux*(arrow-10)-uy*6,py+uy*(arrow-10)+ux*6);x.lineTo(px+ux*(arrow-10)+uy*6,py+uy*(arrow-10)-ux*6);x.closePath();x.fillStyle='#facc15';x.fill();}
+  count++;
+ }
+ x.fillStyle='#d6efff';x.font='14px sans-serif';x.fillText('Sección del tambor · '+count+' cristales visibles',12,24);
+ x.fillStyle='#37e2a0';x.fillText('Sedimento acumulado: '+Math.round(sedimentVisual*100)+' % de escala visual',12,H-14);
+ const p=particles[transIndex];if(!p)return;
+ const ri=d.r0+(d.R-d.r0)*p.initial,tw=particleK(p,d)>0?Math.log(d.R/ri)/particleK(p,d):Infinity;
+ const age=Math.max(0,sim-p.birth-p.delay*d.t*1.3),tt=Math.min(age,d.t,tw),rr=Math.min(d.R,ri*Math.exp(Math.min(particleK(p,d)*tt,20)));
+ $('transInfo').textContent='Cristal #'+(transIndex+1);
+ $('radialInfo').innerHTML='r inicial = <b>'+f(ri,4)+' m</b> · r actual = <b>'+f(rr,4)+' m</b> · v radial = <b>'+f(particleK(p,d)*rr,5)+' m/s</b><br>t pared = <b>'+f(tw,2)+' s</b> · t residencia = <b>'+f(d.t,2)+' s</b> · Destino: <b>'+(tw<=d.t?'CAPTURA':'ESCAPE')+'</b>';
+ const g=$('radialCanvas'),z=g.getContext('2d'),w=g.width,h=g.height,L=54,T=24,B=h-37,right=w-15;
+ z.fillStyle='#091522';z.fillRect(0,0,w,h);z.strokeStyle='#466277';z.lineWidth=1;
+ for(let j=0;j<=4;j++){let y=T+(B-T)*j/4;z.beginPath();z.moveTo(L,y);z.lineTo(right,y);z.stroke();}
+ z.fillStyle='#b7d4e7';z.font='15px sans-serif';z.fillText('r (m)',8,18);z.fillText('tiempo (s)',right-80,h-10);z.fillText(f(d.R,2),8,T+5);z.fillText(f(d.r0,2),8,B+5);
+ z.strokeStyle='#facc15';z.lineWidth=3;z.beginPath();for(let j=0;j<=120;j++){let t=d.t*j/120,r=Math.min(d.R,ri*Math.exp(Math.min(particleK(p,d)*t,20))),px=L+(right-L)*j/120,py=B-(B-T)*(r-d.r0)/(d.R-d.r0);if(j===0)z.moveTo(px,py);else z.lineTo(px,py);}z.stroke();
+ z.beginPath();z.arc(L+(right-L)*Math.min(tt/d.t,1),B-(B-T)*(rr-d.r0)/(d.R-d.r0),6,0,Math.PI*2);z.fillStyle='#ffffff';z.fill();
+ if(tw<=d.t){let px=L+(right-L)*tw/d.t;z.strokeStyle='#37e2a0';z.setLineDash([5,5]);z.beginPath();z.moveTo(px,T);z.lineTo(px,B);z.stroke();z.setLineDash([]);}
+}
+let pov=false,povIndex=0,povLast={yaw:.6,pitch:.37,dist:9},povLastTarget={x:0,y:0,z:0},keyState={};function setPOV(enabled){pov=enabled;$('pov').classList.toggle('active',pov);$('pov').textContent=pov?'↩ Volver a vista exterior':'👁 Vista desde un cristal';$('nextp').disabled=!pov;$('povhud').style.display=pov?'block':'none';if(pov){let ix=particles.findIndex(p=>!p.completed&&p.mesh.visible&&p.mesh.material.color.getHex()===0xffd45d);povIndex=ix>=0?ix:0;povLast={...orbit};povLastTarget={...orbitTarget};outer.visible=false;}else{Object.assign(orbit,povLast);orbitTarget={...povLastTarget};outer.visible=!cut;cam();}}function povCamera(d){if(!pov)return;let p=particles[povIndex];if(!p||!p.mesh.visible){$('povdata').textContent='Esperando que ingrese el siguiente cristal…';return;}let pos=p.mesh.position.clone(),age=Math.max(0,sim-p.birth-p.delay*d.t*1.3),rstart=d.r0+(d.R-d.r0)*p.initial,twall=particleK(p,d)>0?Math.log(d.R/rstart)/particleK(p,d):Infinity;let captured=twall<=d.t;let status=age>=d.t&&!captured?'ESCAPA POR LA SALIDA':age>=twall&&captured?'CAPTURADA EN LA PARED':'EN TRÁNSITO';let radial=new THREE.Vector3(0,pos.y,pos.z).normalize();if(radial.lengthSq()<.01)radial.set(0,1,0);let offset=radial.clone().multiplyScalar(-.22).add(new THREE.Vector3(-.46,.10,0));camera.position.copy(pos).add(offset);let target=pos.clone().add(new THREE.Vector3(.85,0,0)).add(radial.clone().multiplyScalar(.14));if(status==='CAPTURADA EN LA PARED'){target=pos.clone().add(radial.clone().multiplyScalar(.45)).add(new THREE.Vector3(.5,0,0));}camera.lookAt(target);$('povdata').innerHTML='Cristal #'+(povIndex+1)+' · <b>'+status+'</b><br>Radio relativo: '+(100*p.initial).toFixed(0)+' % al ingresar<br>Tiempo: '+age.toFixed(2)+' s · límite de residencia: '+d.t.toFixed(2)+' s';}async function loadThree(){
+ const endpoints=[
+  'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js',
+  'https://esm.sh/three@0.180.0',
+  'https://unpkg.com/three@0.180.0/build/three.module.js',
+  'https://cdn.jsdelivr.net/npm/three@0.180.0/+esm'
+ ];
+ const failures=[];
+ for(const url of endpoints){
+  try{
+   $('status').textContent='● Cargando motor 3D…';
+   const result=await Promise.race([import(url),new Promise((_,rej)=>setTimeout(()=>rej(new Error('Tiempo de descarga agotado')),7500))]);
+   if(result.WebGLRenderer&&result.Scene)return result;
+   failures.push(url+': módulo incompleto');
+  }catch(e){failures.push(url+': '+(e?.message||String(e)));}
+ }
+ throw new Error('No fue posible descargar Three.js desde los servidores alternativos.\n'+failures.join('\n'));
+}
+$('physicsToggle').onclick=()=>{const el=$('physicsPanel');el.hidden=!el.hidden;$('physicsToggle').setAttribute('aria-expanded',String(!el.hidden));};
+
+try{THREE=await loadThree();$('status').textContent='● Construyendo instalación…';build();for(let id of ['play','reset','pov','micro','trans'])$(id).disabled=false;$('status').textContent='● Modelo 3D listo · etiquetas didácticas activadas';$('play').onclick=()=>{running=!running;$('play').textContent=running?'Ⅱ Pausar':'▶ Iniciar';$('status').textContent=running?'● Simulando':'● En pausa';};$('reset').onclick=reset;function setMode(modeName){operatingMode=modeName;const productionPanel=$('productionExploration');if(productionPanel){const exploration=modeName==='free';productionPanel.hidden=!exploration;productionPanel.style.display=exploration?'':'none';}for(const k of ['exp','free'])$('mode-'+k).classList.toggle('active',(modeName==='experimental'&&k==='exp')||(modeName==='free'&&k==='free'));$('preset-info').textContent=modeName==='experimental'?'Ensayo experimental: Q = 0,10 m³/s. Diámetro crítico de referencia fijo: 0,491 µm.':modeName==='industrial'?'Modo planta: producción fija de 4,30 t/h y Σ = 7498,33 m².':'Modo explorar: modificá la producción con el deslizador de la derecha.';updateUI();reset();}
+$('monoMode').onclick=()=>{sizeMode='mono';refreshDistribution();reset();};$('polyMode').onclick=()=>{sizeMode='poly';refreshDistribution();reset();};for(const id of ['polyMin','polyMax'])$(id).addEventListener('input',()=>{polyMin=Number($('polyMin').value);polyMax=Number($('polyMax').value);if(polyMin>=polyMax){if(id==='polyMin'){$('polyMax').value=Math.min(10,polyMin+.1);polyMax=Number($('polyMax').value);}else{$('polyMin').value=Math.max(.1,polyMax-.1);polyMin=Number($('polyMin').value);}}refreshDistribution();reset();});refreshDistribution();
+$('mode-exp').onclick=()=>setMode('experimental');$('mode-free').onclick=()=>setMode('free');
+$('dpSlider').addEventListener('input',()=>{particleDp=sliderToDiameter($('dpSlider').value)*1e-6;updateUI();reset();});
+$('qmSlider').addEventListener('input',()=>{productionTph=Number($('qmSlider').value);updateUI();reset();});
+$('quick5').onclick=()=>{particleDp=5e-6;updateUI();reset();};
+$('quickCrit').onclick=()=>{particleDp=params().dcrit*1e-6;updateUI();reset();};
+$('quick02').onclick=()=>{particleDp=0.2e-6;updateUI();reset();};feedOn=true;$('pulse').onclick=()=>{for(let p of particles){if(p.completed){p.completed=false;p.birth=sim;p.delay=Math.random()*.8;p.initial=.02+Math.random()*.96;p.phase=Math.random()*Math.PI*2;renewParticle(p);}}if(!running){running=true;$('play').textContent='Ⅱ Pausar';$('status').textContent='● Simulando';}else{for(let p of particles){p.birth=sim;p.delay=Math.random()*.8;p.completed=false;p.initial=.02+Math.random()*.96;}}};$('trailsToggle').onclick=()=>{showTrails=!showTrails;for(const p of particles){if(!showTrails)p.trail.visible=false;}updateVisualButtons();};
+showSediment=true;$('labelsToggle').onclick=()=>{showLabels=!showLabels;updateVisualButtons();};$('guideToggle').onclick=()=>{guideActive?stopGuide():startGuide();};$('guideClose').onclick=stopGuide;$('guideNext').onclick=nextGuide;$('guidePrev').onclick=prevGuide;
+$('waterOpacity').oninput=e=>{liquidOpacity=Number(e.target.value)/100;updateVisualButtons();};
+
+$('exitPresentation').onclick=()=>setPresent(false);
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&presentationMode)setPresent(false);});
+updateVisualButtons();
+$('pov').onclick=()=>setPOV(!pov);$('micro').onclick=()=>{microOn=!microOn;$('microPanel').style.display=microOn?'block':'none';$('micro').classList.toggle('active',microOn);$('micro').textContent=microOn?'🔬 Cerrar microscopio':'🔬 Vista microscópica';drawMicro(updateUI());};$('microClose').onclick=()=>{$('micro').click();};$('trans').onclick=()=>{transOn=!transOn;$('transPanel').style.display=transOn?'block':'none';$('trans').classList.toggle('active',transOn);$('trans').textContent=transOn?'🧭 Cerrar corte transversal':'🧭 Corte transversal + gráfica';drawTransverse(updateUI());};$('transClose').onclick=()=>$('trans').click();$('transNext').onclick=()=>{transIndex=(transIndex+1)%particles.length;selectedParticle=transIndex;drawTransverse(updateUI());};$('nextp').onclick=()=>{let candidates=particles.map((p,i)=>i).filter(i=>particles[i].mesh.visible&&!particles[i].completed);povIndex=candidates.length?candidates[(candidates.indexOf(povIndex)+1)%candidates.length]:0;};let canvas=renderer.domElement;canvas.tabIndex=0;let downX=0,downY=0;window.addEventListener('keydown',e=>{if(['KeyW','KeyA','KeyS','KeyD','ShiftLeft','ShiftRight'].includes(e.code)){keyState[e.code]=true;if(document.activeElement!==canvas)canvas.focus();e.preventDefault();}});window.addEventListener('keyup',e=>{if(['KeyW','KeyA','KeyS','KeyD','ShiftLeft','ShiftRight'].includes(e.code)){keyState[e.code]=false;e.preventDefault();}});window.addEventListener('blur',()=>{keyState={};});canvas.addEventListener('pointerdown',e=>{if(pov)return;canvas.focus();downX=e.clientX;downY=e.clientY;drag=true;old={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});canvas.addEventListener('pointermove',e=>{if(!drag)return;orbit.yaw+=(e.clientX-old.x)*.007;orbit.pitch=Math.max(-1.3,Math.min(1.3,orbit.pitch+(e.clientY-old.y)*.007));old={x:e.clientX,y:e.clientY};cam();});canvas.addEventListener('pointerup',e=>{drag=false;if(Math.hypot(e.clientX-downX,e.clientY-downY)<5){let rect=canvas.getBoundingClientRect(),pointer=new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1),ray=new THREE.Raycaster();ray.setFromCamera(pointer,camera);let hits=ray.intersectObjects(particles.map(p=>p.mesh),false);if(hits.length)selectParticle(hits[0].object.userData.particleIndex);}});canvas.addEventListener('pointercancel',()=>drag=false);canvas.addEventListener('wheel',e=>{if(pov)return;e.preventDefault();orbit.dist=Math.max(6,Math.min(33,orbit.dist+e.deltaY*.014));cam();},{passive:false});new ResizeObserver(resize).observe($('viewport'));reset();raf=requestAnimationFrame(loop);}catch(e){
+ $('status').textContent='● No se pudo iniciar el modelo 3D';
+ const msg=(e?.stack||e?.message||String(e));
+ console.error('Error al iniciar la centrifugadora 3D:',e);
+ const box=document.createElement('div');
+ box.style.cssText='color:#eaf3ff;padding:34px 24px;text-align:left;max-width:680px;margin:75px auto;background:#122034;border:1px solid #47607b;border-radius:14px';
+ const title=document.createElement('h2');title.textContent='No se pudo iniciar la escena 3D';box.appendChild(title);
+ const text=document.createElement('p');text.textContent='El detalle técnico está debajo. Si menciona Three.js, comprobá la conexión y probá abrir el archivo con Chrome o Firefox. Si menciona otro error, copialo para poder corregirlo.';box.appendChild(text);
+ const pre=document.createElement('pre');pre.style.cssText='white-space:pre-wrap;overflow-wrap:anywhere;color:#ffc2b3;font-size:12px;background:#09131f;padding:14px;border-radius:9px;max-height:250px;overflow:auto';pre.textContent=msg;box.appendChild(pre);
+ const retry=document.createElement('button');retry.textContent='↻ Reintentar carga';retry.onclick=()=>location.reload();box.appendChild(retry);
+ const copy=document.createElement('button');copy.textContent='Copiar diagnóstico';copy.style.marginLeft='8px';copy.onclick=()=>navigator.clipboard?.writeText(msg);box.appendChild(copy);
+ $('viewport').replaceChildren(box);
+}
+</script></body></html>
